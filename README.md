@@ -1,5 +1,7 @@
 # ClawDeck
 
+[中文说明](./README_zh.md)
+
 > **Warning**: This is a beta version. Do not use in production environments.
 
 When users open ClawDeck, they should be able to:
@@ -100,3 +102,7 @@ npm run build:bridge
 ## License
 
 MIT
+
+## Contact
+
+![微信](./docs/weixin.jpg)  Welcome to connect

@@ -1,5 +1,7 @@
 # ClawDeck
 
+[English](./README.md)
+
 > **警告**：当前为 beta 版本，请勿用于生产环境。
 
 用户打开 ClawDeck 后应能：
@@ -100,3 +102,7 @@ npm run build:bridge
 ## 许可证
 
 MIT
+
+## 联系方式
+
+![微信](./docs/weixin.jpg)  欢迎交流
