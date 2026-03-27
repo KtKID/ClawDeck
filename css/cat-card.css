@@ -1,0 +1,332 @@
+/* css/cat-card.css — 猫咪卡片样式 */
+
+.cat-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 14px;
+  min-width: 220px;
+  max-width: 220px;
+  box-shadow: var(--panel-shadow);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  backdrop-filter: blur(12px);
+}
+
+.cat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover, 6px 6px 0 rgba(74, 59, 50, 0.25));
+}
+
+.cat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cat-status {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-idle {
+  background: rgba(136, 176, 75, 0.15);
+  color: var(--status-success, #88B04B);
+}
+
+.status-working {
+  background: rgba(107, 155, 210, 0.15);
+  color: var(--status-info, #6B9BD2);
+}
+
+.status-pending {
+  background: rgba(244, 208, 111, 0.2);
+  color: #C9A227;
+}
+
+.status-error {
+  background: rgba(214, 69, 69, 0.15);
+  color: var(--status-error, #D64545);
+}
+
+.cat-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 8px;
+  border: 3px solid var(--bg-secondary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* 头像包装器，用于放置气泡按钮 */
+
+.cat-avatar.has-image {
+  font-size: 0;
+  overflow: hidden;
+}
+
+
+.cat-avatar.avatar-missing {
+  background: var(--bg-secondary);
+}
+
+.cat-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.cat-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+/* 聊天气泡按钮 */
+.cat-chat-bubble {
+  position: absolute;
+  right: calc(50% - 40px);
+  bottom: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-coral, #E07A5F);
+  border: 2px solid var(--bg-panel);
+  color: white;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cat-chat-bubble:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.cat-chat-bubble:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+
+.cat-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-panel);
+}
+
+.cat-avatar.idle::after {
+  background: var(--status-success, #88B04B);
+}
+
+.cat-avatar.working::after {
+  background: var(--status-info, #6B9BD2);
+  animation: pulse 1s infinite;
+}
+
+.cat-avatar.pending::after {
+  background: #C9A227;
+}
+
+.cat-avatar.error::after {
+  background: var(--status-error, #D64545);
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+.cat-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.cat-characteristics {
+  font-size: 0.75rem;
+  color: var(--accent-coral, #E07A5F);
+  text-align: center;
+  margin: 0 auto 8px auto;
+  background: rgba(224, 122, 95, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: block;
+  width: fit-content;
+}
+
+.cat-role {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.cat-task {
+  background: var(--bg-secondary);
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  min-height: 50px;
+}
+
+.cat-task-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.cat-task-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cat-command {
+  display: flex;
+  gap: 6px;
+}
+
+.cat-command input {
+  flex: 1;
+  padding: 7px 9px;
+  border: 2px solid var(--panel-border);
+  border-radius: 8px;
+  font-size: 0.7rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cat-command input:focus {
+  border-color: var(--accent-blue);
+}
+
+.cat-command input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cat-command button {
+  padding: 7px 10px;
+  background: var(--accent-coral, #E07A5F);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cat-command button:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.cat-command button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 猫咪卡片入场动画 */
+.cat-card.entering {
+  animation: fadeSlideUp 0.4s ease-out;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 发送成功动画 */
+.cat-card.success .cat-command button {
+  background: var(--status-success, #88B04B);
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 发送失败动画 */
+.cat-card.error .cat-command input {
+  border-color: var(--status-error, #D64545);
+  animation: errorShake 0.4s ease-out;
+}
+
+.cat-card.error .cat-command button {
+  background: var(--status-error, #D64545);
+}
+
+@keyframes errorShake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}

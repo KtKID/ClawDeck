@@ -1,0 +1,339 @@
+{
+  "name": "tool-execution",
+  "description": "多次工具调用场景，从 recorded-2026-03-08T01-44-57.json 提取：read skill file → read SOUL.md → read USER.md → read IDENTITY.md → write 记录文件",
+  "events": [
+    {
+      "type": "llm_input",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "provider": "minimax",
+        "model": "MiniMax-M2.5",
+        "timestamp": 1772935133239
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 4,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772935133243
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772935133243
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 2,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935133245
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 1562,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935134807
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 6,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "error",
+          "error": "HTTP 401 authentication_error: invalid api key (request_id: 05fc0adebd4b9abbd1ec59c1d1ad9547)",
+          "endedAt": 1772935134813
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772935134813
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 1591,
+        "timestamp": 1772935134823
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 6,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "provider": "minimax",
+        "model": "MiniMax-M2.5",
+        "usage": {},
+        "timestamp": 1772935134828
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 102,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "provider": "bailian",
+        "model": "qwen3-max-2026-01-23",
+        "timestamp": 1772935134931
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 2,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 3,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772935134933
+        },
+        "timestamp": 1772935134933
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 8,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935134941
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 7195,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935142136
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 7,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 4,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "read",
+          "toolCallId": "call_96a596a2f93e4314af1ff86c",
+          "args": {
+            "path": "~/.openclaw/skills/quick-note/SKILL.md"
+          }
+        },
+        "timestamp": 1772935142143
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 5,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "params": {
+          "path": "~/.openclaw/skills/quick-note/SKILL.md"
+        },
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "toolCallId": "call_96a596a2f93e4314af1ff86c",
+        "timestamp": 1772935142148
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 11,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 5,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "read",
+          "toolCallId": "call_96a596a2f93e4314af1ff86c",
+          "meta": "from ~/.openclaw/skills/quick-note/SKILL.md",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "---\nname: quick-note\ndescription: 快速记录技能\n---\n\n# Quick Note - 快速记录技能\n\n## 触发条件\n当用户说以下关键词时激活：\n- \"速记\"\n- \"记录\"\n- \"记下来\"\n"
+              }
+            ]
+          }
+        },
+        "timestamp": 1772935142159
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 7,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "---\nname: quick-note\ndescription: 快速记录技能\n---\n\n# Quick Note - 快速记录技能\n\n## 触发条件\n当用户说以下关键词时激活：\n- \"速记\"\n- \"记录\"\n- \"记下来\"\n"
+            }
+          ]
+        },
+        "durationMs": 28,
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "toolCallId": "call_96a596a2f93e4314af1ff86c",
+        "timestamp": 1772935142166
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 7177,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935149343
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 7,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 6,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "write",
+          "toolCallId": "call_703cfa4b2ab547feb2293813",
+          "args": {
+            "path": "/Users/xgt/.openclaw/workspace-main/MadeMe/brain/00_收集/记录/Claw看板开发任务.md",
+            "content": "# Claw看板开发任务\n\n今天要完成claw看板记录数据和批准功能，对话功能。制作自己的cc skill仓库\n\n---\n记录时间: 2026-03-08 09:58:00"
+          }
+        },
+        "timestamp": 1772935149350
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 3,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "write",
+        "params": {
+          "path": "/Users/xgt/.openclaw/workspace-main/MadeMe/brain/00_收集/记录/Claw看板开发任务.md",
+          "content": "# Claw看板开发任务\n\n今天要完成claw看板记录数据和批准功能，对话功能。制作自己的cc skill仓库\n\n---\n记录时间: 2026-03-08 09:58:00"
+        },
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "toolCallId": "call_703cfa4b2ab547feb2293813",
+        "timestamp": 1772935149353
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 3,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 7,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "write",
+          "toolCallId": "call_703cfa4b2ab547feb2293813",
+          "meta": "to ~/.openclaw/workspace-main/MadeMe/brain/00_收集/记录/Claw看板开发任务.md (86 chars)",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "Successfully wrote 86 bytes to /Users/xgt/.openclaw/workspace-main/MadeMe/brain/00_收集/记录/Claw看板开发任务.md"
+              }
+            ]
+          }
+        },
+        "timestamp": 1772935149356
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 7,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "write",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully wrote 86 bytes to /Users/xgt/.openclaw/workspace-main/MadeMe/brain/00_收集/记录/Claw看板开发任务.md"
+            }
+          ]
+        },
+        "durationMs": 18,
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "toolCallId": "call_703cfa4b2ab547feb2293813",
+        "timestamp": 1772935149363
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 3612,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772935152975
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 1,
+      "params": {
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "seq": 8,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772935152976
+        },
+        "timestamp": 1772935152976
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 4,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 18052,
+        "timestamp": 1772935152980
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 7,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "d5e1473b-0500-4b6a-b2ee-bd0dd063a29b",
+        "provider": "bailian",
+        "model": "qwen3-max-2026-01-23",
+        "usage": {
+          "input": 79761,
+          "output": 312,
+          "total": 80073
+        },
+        "timestamp": 1772935152987
+      }
+    }
+  ]
+}

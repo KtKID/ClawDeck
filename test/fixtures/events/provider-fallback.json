@@ -1,0 +1,254 @@
+{
+  "name": "provider-fallback",
+  "description": "Provider Fallback 场景（从 recorded-2026-03-08T01-39-03.json 提取）：minimax 认证失败 → 自动切换 bailian 成功",
+  "events": [
+    {
+      "type": "llm_input",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "minimax",
+        "model": "MiniMax-M2.5",
+        "timestamp": 1772934013580
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 6,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934013585
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934013586
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 13,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934013599
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 1580,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934015179
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 37,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "error",
+          "error": "HTTP 401 authentication_error: invalid api key (request_id: 05fc067f61c22e5381a16f5b38ebc543)",
+          "endedAt": 1772934015216
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934015216
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 14,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 1659,
+        "timestamp": 1772934015230
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 8,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "minimax",
+        "model": "MiniMax-M2.5",
+        "usage": {},
+        "timestamp": 1772934015237
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 114,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "bailian",
+        "model": "qwen3-max-2026-01-23",
+        "timestamp": 1772934015351
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 9,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 3,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934015361
+        },
+        "timestamp": 1772934015361
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 11,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934015372
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 7375,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934022747
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 4,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "write",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "args": {
+            "path": "/Users/xgt/.openclaw/workspace-main/memory/2026-03-08.md",
+            "content": "# 2026-03-08\n\n## 测试记录\n- 测试记录收集数据"
+          }
+        },
+        "timestamp": 1772934022757
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 11,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "write",
+        "params": {
+          "path": "/Users/xgt/.openclaw/workspace-main/memory/2026-03-08.md",
+          "content": "# 2026-03-08\n\n## 测试记录\n- 测试记录收集数据"
+        },
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934022768
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 6,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 5,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "write",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "meta": "to ~/.openclaw/workspace-main/memory/2026-03-08.md (32 chars)",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "Successfully wrote 32 bytes to /Users/xgt/.openclaw/workspace-main/memory/2026-03-08.md"
+              }
+            ]
+          }
+        },
+        "timestamp": 1772934022774
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 8,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "write",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully wrote 32 bytes to /Users/xgt/.openclaw/workspace-main/memory/2026-03-08.md"
+            }
+          ]
+        },
+        "durationMs": 31,
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934022782
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 2869,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934025651
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 3,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 6,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934025654
+        },
+        "timestamp": 1772934025654
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 5,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 10312,
+        "timestamp": 1772934025659
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 12,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "bailian",
+        "model": "qwen3-max-2026-01-23",
+        "usage": {
+          "input": 36566,
+          "output": 184,
+          "total": 36750
+        },
+        "timestamp": 1772934025671
+      }
+    }
+  ]
+}

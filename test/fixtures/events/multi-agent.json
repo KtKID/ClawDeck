@@ -1,0 +1,307 @@
+{
+  "name": "multi-agent",
+  "description": "3 个 agent 并发执行，各有独立 session，验证并发隔离",
+  "events": [
+    {
+      "type": "session_start",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_11111111111111111111111111111111",
+        "agentId": "main",
+        "timestamp": 1772934013580
+      }
+    },
+    {
+      "type": "session_start",
+      "delay": 100,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "sessionKey": "agent:reviewer:telegram:direct:user_222222222",
+        "agentId": "reviewer",
+        "timestamp": 1772934013680
+      }
+    },
+    {
+      "type": "session_start",
+      "delay": 200,
+      "params": {
+        "sessionId": "e2f91595-49c1-5ab4-a6dc-dc9aa65f0ee2",
+        "sessionKey": "agent:analyst:slack:direct:channel_C33333333",
+        "agentId": "analyst",
+        "timestamp": 1772934013780
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 300,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "r1-main",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934014000
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 100,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "runId": "r2-reviewer",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "timestamp": 1772934014100
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 100,
+      "params": {
+        "sessionId": "e2f91595-49c1-5ab4-a6dc-dc9aa65f0ee2",
+        "runId": "r3-analyst",
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "timestamp": 1772934014200
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "r1-main",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934014010
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_11111111111111111111111111111111",
+        "timestamp": 1772934014010
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "r2-reviewer",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934014110
+        },
+        "sessionKey": "agent:reviewer:telegram:direct:user_222222222",
+        "timestamp": 1772934014110
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "r3-analyst",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934014210
+        },
+        "sessionKey": "agent:analyst:slack:direct:channel_C33333333",
+        "timestamp": 1772934014210
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 500,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "r1-main",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 500, "output": 200, "cacheRead": 0, "cacheWrite": 0, "total": 700 },
+        "timestamp": 1772934014500
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 200,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "runId": "r2-reviewer",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "usage": { "input": 300, "output": 150, "cacheRead": 50, "cacheWrite": 0, "total": 500 },
+        "timestamp": 1772934014700
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 300,
+      "params": {
+        "sessionId": "e2f91595-49c1-5ab4-a6dc-dc9aa65f0ee2",
+        "runId": "r3-analyst",
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "usage": { "input": 200, "output": 100, "cacheRead": 0, "cacheWrite": 0, "total": 300 },
+        "timestamp": 1772934015000
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "params": { "path": "/src/app.ts" },
+        "runId": "r1-main",
+        "toolCallId": "tc1",
+        "timestamp": 1772934015100
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 50,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "toolName": "bash",
+        "params": { "command": "npm test" },
+        "runId": "r2-reviewer",
+        "toolCallId": "tc2",
+        "timestamp": 1772934015150
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 300,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "result": {
+          "content": [{ "type": "text", "text": "file content..." }]
+        },
+        "durationMs": 120,
+        "runId": "r1-main",
+        "toolCallId": "tc1",
+        "timestamp": 1772934015400
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 200,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "toolName": "bash",
+        "error": "timeout",
+        "durationMs": 5000,
+        "runId": "r2-reviewer",
+        "toolCallId": "tc2",
+        "timestamp": 1772934015350
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 50,
+      "params": {
+        "runId": "r1-main",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934015450
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_11111111111111111111111111111111",
+        "timestamp": 1772934015450
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 1500,
+        "timestamp": 1772934015460
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 50,
+      "params": {
+        "runId": "r3-analyst",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934015550
+        },
+        "sessionKey": "agent:analyst:slack:direct:channel_C33333333",
+        "timestamp": 1772934015550
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "e2f91595-49c1-5ab4-a6dc-dc9aa65f0ee2",
+        "success": true,
+        "durationMs": 1400,
+        "timestamp": 1772934015560
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_11111111111111111111111111111111",
+        "messageCount": 3,
+        "timestamp": 1772934015660
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "e2f91595-49c1-5ab4-a6dc-dc9aa65f0ee2",
+        "sessionKey": "agent:analyst:slack:direct:channel_C33333333",
+        "messageCount": 2,
+        "timestamp": 1772934015760
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 200,
+      "params": {
+        "runId": "r2-reviewer",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934015950
+        },
+        "sessionKey": "agent:reviewer:telegram:direct:user_222222222",
+        "timestamp": 1772934015950
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "success": true,
+        "durationMs": 2300,
+        "timestamp": 1772934015960
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "d1e80484-38b0-4ff3-95cb-cb89954e9dd1",
+        "sessionKey": "agent:reviewer:telegram:direct:user_222222222",
+        "messageCount": 4,
+        "timestamp": 1772934016060
+      }
+    }
+  ]
+}

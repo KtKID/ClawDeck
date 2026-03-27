@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "<agentId>": {
+      "avatarUrl": "/plugins/clawdeck/avatars/<file>.png",
+      "traits": ["特性1", "特性2"]
+    }
+  }
+}

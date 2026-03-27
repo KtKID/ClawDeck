@@ -1,0 +1,45 @@
+/* css/themes.css — Theme variables (Canvas renderer + DOM panels both read these) */
+
+:root {
+  /* Background */
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1e2533;
+  --bg-panel: rgba(17, 24, 39, 0.9);
+
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-dim: #64748b;
+  --text-bright: #f8fafc;
+
+  /* Accents */
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #06b6d4;
+
+  /* Effects */
+  --glow-color: #3b82f6;
+  --grid-color: rgba(255, 255, 255, 0.03);
+
+  /* Panel */
+  --panel-border: rgba(59, 130, 246, 0.2);
+  --panel-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --panel-radius: 12px;
+}
+
+/* Light theme (optional) */
+[data-theme="light"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-panel: rgba(255, 255, 255, 0.95);
+  --text-primary: #1e293b;
+  --text-dim: #94a3b8;
+  --text-bright: #0f172a;
+  --grid-color: rgba(0, 0, 0, 0.04);
+  --panel-border: rgba(59, 130, 246, 0.15);
+  --panel-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}

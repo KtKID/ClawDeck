@@ -1,0 +1,10 @@
+{
+  "name": "@openclaw/clawdeck",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ClawDeck — OpenClaw 任务看板与可视化交互层插件",
+  "type": "module",
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "clawdeck-dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/run-test.mjs --all",
+    "test:existing": "node scripts/run-test.mjs test/server.test.cjs test/telemetry-routing.test.mjs test/sender.test.mjs",
+    "test:file": "node scripts/run-test.mjs",
+    "fixtures:check": "node scripts/validate-fixtures.mjs",
+    "deploy": "npm run build:bridge && node scripts/deploy-plugin.mjs",
+    "deploy:workspace": "node scripts/deploy-plugin.mjs --workspace",
+    "deploy:remote": "bash scripts/deploy-remote.sh",
+    "dev": "node dev-server.cjs",
+    "dev:mock": "node dev-server.cjs --mock --mock-log-seed=logs/刷新问题clawdeck-2026-03-13T05-40-36.log",
+    "dev:mock:stress": "node dev-server.cjs --mock=stress",
+    "dev:local": "node dev-server.cjs --mock --mock-log-seed=logs/刷新问题clawdeck-2026-03-13T05-40-36.log",
+    "plan:status": "node scripts/print-autotest-status.mjs",
+    "build:bridge": "tsc -p bridge/src/tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

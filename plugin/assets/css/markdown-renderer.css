@@ -1,0 +1,218 @@
+/* 
+  Markdown Renderer Core CSS
+  Ported from openclaw_official styling and adapted for Cat Workshop aesthetic.
+*/
+
+.markdown-content,
+.markdown-plain-text-fallback {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-color, #333);
+    word-wrap: break-word;
+}
+
+.markdown-content p,
+.markdown-plain-text-fallback p {
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+    font-weight: 700;
+    margin-block-start: 1em;
+    margin-block-end: 0.5em;
+    color: var(--ink-color, #111);
+}
+
+.markdown-content h1 {
+    font-size: 1.4em;
+    border-bottom: 1px solid var(--line-color, #ddd);
+    padding-bottom: 4px;
+}
+
+.markdown-content h2 {
+    font-size: 1.25em;
+    border-bottom: 1px dashed var(--line-color, #ddd);
+    padding-bottom: 4px;
+}
+
+.markdown-content h3 {
+    font-size: 1.1em;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    padding-inline-start: 2em;
+    margin-block-start: 0.6em;
+    margin-block-end: 0.6em;
+}
+
+.markdown-content li {
+    margin-block-start: 0.3em;
+    padding-inline-start: 0.2em;
+}
+
+.markdown-content blockquote {
+    margin: 0.9em 0;
+    padding: 0.65em 1em 0.65em 1.1em;
+    border-left: 4px solid var(--night-border-wood, #8B6914);
+    background: var(--night-bg-secondary, rgba(0, 0, 0, 0.03));
+    border-radius: 0 4px 4px 0;
+    color: var(--night-text-muted, #666);
+}
+
+.markdown-content a {
+    color: var(--night-status-info, #4a90e2);
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    text-decoration: underline;
+}
+
+/* Inline code */
+.markdown-content code {
+    font-family: 'Courier New', Courier, monospace;
+    background: rgba(150, 150, 150, 0.15);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Code Blocks */
+.markdown-content .code-block-wrapper,
+.markdown-content pre.code-block {
+    margin: 1em 0;
+    background: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.markdown-content .code-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2d2d2d;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #bbb;
+    border-bottom: 1px solid #111;
+}
+
+.markdown-content .code-block-lang {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.markdown-content .code-block-copy {
+    background: transparent;
+    border: 1px solid #444;
+    color: #bbb;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.markdown-content .code-block-copy:hover {
+    background: #444;
+    color: #fff;
+}
+
+.markdown-content .code-block-copy .code-block-copy__done {
+    display: none;
+    color: #A3CF5D;
+}
+
+.markdown-content .code-block-copy.is-copied .code-block-copy__idle {
+    display: none;
+}
+
+.markdown-content .code-block-copy.is-copied .code-block-copy__done {
+    display: inline;
+}
+
+.markdown-content pre {
+    margin: 0;
+    padding: 12px;
+    overflow-x: auto;
+    background: #1e1e1e;
+}
+
+.markdown-content pre code {
+    background: none;
+    padding: 0;
+    color: #d4d4d4;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0;
+}
+
+/* Tables */
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    font-size: 0.9em;
+}
+
+.markdown-content th,
+.markdown-content td {
+    border: 1px solid var(--line-color, #ddd);
+    padding: 6px 10px;
+    text-align: left;
+}
+
+.markdown-content th {
+    background: var(--night-bg-secondary, rgba(0, 0, 0, 0.05));
+    font-weight: 700;
+}
+
+/* Images */
+.markdown-content img.markdown-inline-image,
+.markdown-content img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 0.5em 0;
+}
+
+/* JSON Collapsible Details */
+.markdown-content details.json-collapse {
+    margin: 1em 0;
+    background: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.markdown-content details.json-collapse summary {
+    padding: 8px 12px;
+    color: #bbb;
+    font-size: 11px;
+    font-family: -apple-system, sans-serif;
+    cursor: pointer;
+    background: #2d2d2d;
+    user-select: none;
+    font-weight: 600;
+}
+
+.markdown-content details.json-collapse summary:hover {
+    background: #333;
+}
+
+.markdown-content details.json-collapse .code-block-wrapper {
+    margin: 0;
+    border: none;
+    border-top: 1px solid #111;
+    border-radius: 0;
+    box-shadow: none;
+}

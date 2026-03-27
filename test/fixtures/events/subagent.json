@@ -1,0 +1,181 @@
+{
+  "name": "subagent",
+  "description": "【罕见场景】子 agent 生成与结束：真实录制中未出现此类事件，保留用于兼容性测试",
+  "_note": "注意：真实录制数据中未出现 subagent_spawned/subagent_ended 事件，此文件仅用于测试兼容性",
+  "events": [
+    {
+      "type": "session_start",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "agentId": "main",
+        "timestamp": 1772934013580
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 200,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934013585
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934013586
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934013586
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 500,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 400, "output": 200, "cacheRead": 0, "cacheWrite": 0, "total": 600 },
+        "timestamp": 1772934014100
+      }
+    },
+    {
+      "type": "subagent_spawned",
+      "delay": 200,
+      "params": {
+        "childSessionKey": "agent:main:sub:research:abc123",
+        "agentId": "main",
+        "label": "Research Helper",
+        "mode": "research",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "timestamp": 1772934014300
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 100,
+      "params": {
+        "sessionId": "sub-abc123",
+        "runId": "r2-sub",
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "timestamp": 1772934014400
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 400,
+      "params": {
+        "sessionId": "sub-abc123",
+        "runId": "r2-sub",
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "usage": { "input": 150, "output": 80, "cacheRead": 0, "cacheWrite": 0, "total": 230 },
+        "timestamp": 1772934014800
+      }
+    },
+    {
+      "type": "subagent_spawned",
+      "delay": 100,
+      "params": {
+        "childSessionKey": "agent:main:sub:analyze:def456",
+        "agentId": "main",
+        "label": "Code Analyzer",
+        "mode": "analyze",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "timestamp": 1772934014900
+      }
+    },
+    {
+      "type": "subagent_ended",
+      "delay": 500,
+      "params": {
+        "targetSessionKey": "agent:main:sub:research:abc123",
+        "outcome": "ok",
+        "runId": "r2-sub",
+        "timestamp": 1772934015400
+      }
+    },
+    {
+      "type": "subagent_ended",
+      "delay": 300,
+      "params": {
+        "targetSessionKey": "agent:main:sub:analyze:def456",
+        "outcome": "error",
+        "error": "Task too complex",
+        "runId": "r3-sub",
+        "timestamp": 1772934015700
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 200,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934015900
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 500,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 600, "output": 300, "cacheRead": 200, "cacheWrite": 0, "total": 1100 },
+        "timestamp": 1772934016400
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 50,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 2,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934016450
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934016450
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 3000,
+        "timestamp": 1772934016460
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "messageCount": 4,
+        "timestamp": 1772934016560
+      }
+    }
+  ]
+}

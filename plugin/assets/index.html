@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawDeck - 漂流甲板</title>
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/deck.css">
+  <link rel="stylesheet" href="css/workshop.css">
+  <link rel="stylesheet" href="css/cat-card.css">
+  <link rel="stylesheet" href="css/cat-station.css">
+  <link rel="stylesheet" href="css/schedule-panel.css">
+  <link rel="stylesheet" href="css/chat-drawer.css?v=20260326c">
+  <link rel="stylesheet" href="css/today-timeline.css">
+  <link rel="stylesheet" href="css/ai-advice.css">
+  <link rel="stylesheet" href="css/markdown-renderer.css">
+  <style>
+    /* === P1 新增面板样式 === */
+
+    /* 会话时间线（左侧） */
+    .session-timeline {
+      position: absolute;
+      top: 80px;
+      left: 16px;
+      width: 280px;
+      max-height: calc(100vh - 200px);
+      background: var(--paper-color);
+      background-image: var(--paper-texture);
+      border: 3px solid var(--line-color);
+      border-radius: 8px 12px 6px 15px;
+      /* Irregular */
+      box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.2);
+      display: none;
+      overflow: hidden;
+    }
+
+    .session-timeline.open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 2px dashed var(--line-color);
+    }
+
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink-color);
+      font-family: var(--heal-font);
+      flex: 1;
+    }
+
+    .timeline-count {
+      font-size: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--line-color);
+    }
+
+    .timeline-close {
+      background: none;
+      border: none;
+      color: var(--line-color);
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+
+    .timeline-close:hover {
+      color: var(--ink-color);
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .timeline-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 12px;
+    }
+
+    .timeline-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--line-color);
+      font-size: 14px;
+      font-style: italic;
+      font-family: var(--heal-font);
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 4px 8px 3px 6px;
+      border: 1px solid transparent;
+      border-left: 4px solid var(--line-color);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .timeline-item:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--line-color);
+      border-left-width: 4px;
+      border-style: dashed solid solid solid;
+      transform: translateX(2px);
+    }
+
+    .timeline-item.step-llm {
+      border-left-color: var(--heal-mint);
+    }
+
+    .timeline-item.step-tool {
+      border-left-color: var(--heal-purple);
+    }
+
+    .timeline-item.step-error {
+      border-left-color: var(--heal-orange);
+      background: #ffebee;
+    }
+
+    .timeline-item.step-sub {
+      border-left-color: var(--heal-yellow);
+    }
+
+    .timeline-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .timeline-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .timeline-summary {
+      font-size: 13px;
+      font-family: var(--heal-font);
+      color: var(--ink-color);
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .timeline-meta {
+      font-size: 11px;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--line-color);
+      margin-top: 4px;
+    }
+
+    /* 控制面板（底部左） */
+    .control-panel {
+      position: absolute;
+      bottom: 60px;
+      left: 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--panel-radius);
+      box-shadow: var(--panel-shadow);
+      backdrop-filter: blur(12px);
+      padding: 12px;
+    }
+
+    .cp-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .cp-header {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .cp-header-active {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .cp-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cp-btn:hover:not(:disabled) {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .cp-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .cp-approve:hover:not(:disabled) {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+
+    .cp-interrupt:hover:not(:disabled) {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    .cp-icon {
+      font-size: 14px;
+    }
+
+    .cp-label {
+      font-size: 12px;
+    }
+
+    .cp-instruct-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cp-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .cp-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .cp-input:disabled {
+      opacity: 0.4;
+    }
+
+    .cp-send {
+      padding: 6px 10px;
+    }
+
+    .cp-model-row {
+      margin-top: 6px;
+    }
+
+    .cp-model-select {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .cp-model-select:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .cp-model-select:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .cp-reset:hover:not(:disabled) {
+      background: var(--accent-yellow);
+      border-color: var(--accent-yellow);
+      color: #000;
+    }
+
+    /* 成本面板（底部右） */
+    .cost-panel {
+      position: absolute;
+      bottom: 44px;
+      right: 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--panel-radius);
+      box-shadow: var(--panel-shadow);
+      backdrop-filter: blur(12px);
+      padding: 10px 16px;
+    }
+
+    .cost-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .cost-item {
+      text-align: center;
+    }
+
+    .cost-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-bright);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cost-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .cost-error .cost-value {
+      color: var(--accent-red);
+    }
+
+    /* 连接状态提示 */
+    .connection-status {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--bg-panel);
+      border: 1px solid var(--panel-border);
+    }
+
+    .connection-status.online {
+      color: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+
+    .connection-status.offline {
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+  </style>
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <filter id="hand-drawn-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+      </filter>
+    </defs>
+  </svg>
+  <div id="hud">
+    <div class="connection-status offline" id="conn-status">disconnected</div>
+  </div>
+
+  <div id="ai-advice-panel" class="app-panel hidden"></div>
+
+  <!-- Markdown Dependencies (Local Vendor) -->
+  <script src="vendor/purify.min.js"></script>
+  <script src="vendor/marked.min.js"></script>
+  <script src="js/markdown-renderer.js"></script>
+
+  <!-- Modules -->
+  <script type="module">
+    // 引入 i18n 核心模块（自执行设好 document.documentElement.lang）
+    import './i18n/index.js';
+    
+    import { GatewayClient } from './bridge/gateway-client.js';
+    import { MockGatewayClient } from './bridge/mock-replay-source.js';
+    import { DataRouter } from './bridge/data-router.js';
+    import { ScoreBar } from './ui/score-bar.js';
+    import { DetailPanel } from './ui/detail-panel.js';
+    import { RadialMenu } from './ui/radial-menu.js';
+    import { NotificationManager } from './ui/notification.js';
+    import { SessionTimeline } from './ui/session-timeline.js';
+    import { ControlPanel } from './ui/control-panel.js';
+    import { CostPanel } from './ui/cost-panel.js';
+    import { WorkshopPanel } from './ui/workshop-panel.js';
+    import { CatStationPanel } from './ui/cat-station-panel.js';
+    import { refreshTracker } from './ui/refresh-tracker.js';
+    import { TodayTimelinePanel } from './ui/today-timeline-panel.js';
+    import { AIAdviceController } from './ui/ai-advice-controller.js';
+
+    const hud = document.getElementById('hud');
+
+    // --- Init Bridge (Gateway WebSocket 或 Mock 模式) ---
+    // URL 参数 ?mock=demo|replay|stress|recording 可启用 Mock 模式
+    // recording 模式支持 &file=xxx.json 指定录制文件
+    const urlParams = new URLSearchParams(location.search);
+    const mockMode = urlParams.get('mock');
+    const recordingFile = urlParams.get('file');
+
+    let gateway;
+    if (mockMode) {
+      gateway = new MockGatewayClient({ scenario: mockMode, tickInterval: 2000 });
+      console.log(`[ClawDeck] Mock 模式: ${mockMode}`);
+
+      // recording 模式：加载录制文件（未指定则自动加载默认文件）
+      if (mockMode === 'recording') {
+        const file = recordingFile || 'basic-lifecycle.json';
+        try {
+          const response = await fetch(`/test/fixtures/events/${file}`);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          gateway.loadRecording(data);
+          console.log(`[ClawDeck] 已加载录制: ${data.name} (${data.events.length} events)`);
+        } catch (err) {
+          console.error(`[ClawDeck] 加载录制失败: ${err.message}`);
+        }
+      }
+    } else {
+      const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${location.host}`;
+      gateway = new GatewayClient({ url: wsUrl });
+    }
+
+    // --- Init UI ---
+    const scoreBar = new ScoreBar(hud);
+    const detailPanel = DetailPanel; // class, shown via static or workshop
+    const radialMenu = RadialMenu;   // class
+    const notify = new NotificationManager(hud);
+    const timeline = new SessionTimeline(hud);
+    const controlPanel = new ControlPanel(hud, gateway);
+    const costPanel = new CostPanel(hud);
+
+    // --- DataRouter ---
+    const dataSource = new DataRouter(gateway);
+
+    // --- WorkshopPanel ---
+    const workshop = new WorkshopPanel(hud, dataSource, gateway);
+    // 日志指向工坊日志面板（已移除旧航行日志模块）
+    const logPanel = workshop._workshopLogPanel;
+
+    // 始终显示 workshop 视图（已移除星图 Canvas 视图）
+    workshop.show();
+
+    // --- AI 建议 + 今日时间线（插入到筛选栏上方，工单统计栏下方）---
+    // WorkshopPanel 构造时同步调用 _render()，此时 DOM 已就绪
+    const workshopContainer = document.querySelector('.workshop-container');
+    const filterBarEl = document.querySelector('.workshop-filter-bar');
+
+    // AI 建议区块（排在时间线上方，符合设计文档"建议 > 今日成果"顺序）
+    const aiAdviceSectionEl = document.createElement('section');
+    aiAdviceSectionEl.className = 'ai-advice-section';
+    if (workshopContainer && filterBarEl) {
+      workshopContainer.insertBefore(aiAdviceSectionEl, filterBarEl);
+    } else if (workshopContainer) {
+      workshopContainer.appendChild(aiAdviceSectionEl);
+    }
+    const aiAdvice = new AIAdviceController(aiAdviceSectionEl, dataSource, gateway);
+
+    // 今日成果时间线（纯展示，无外部依赖）
+    const todayTimelineEl = document.createElement('section');
+    todayTimelineEl.className = 'today-tl-section';
+    if (workshopContainer && filterBarEl) {
+      workshopContainer.insertBefore(todayTimelineEl, filterBarEl);
+    } else if (workshopContainer) {
+      workshopContainer.appendChild(todayTimelineEl);
+    }
+    const todayTimeline = new TodayTimelinePanel(todayTimelineEl);
+
+    // workshop 默认可见，无需额外处理
+
+    dataSource.onRoute(({ caller, method, layer, durationMs }) => {
+      if (method === 'health') return; // 跳过 health 轮询日志，避免刷屏
+      logPanel.log('info', `[RPC] ${caller} → ${method} [${layer}] ${durationMs}ms`);
+    });
+
+    // 连接状态显示
+    const connEl = document.getElementById('conn-status');
+    gateway.on('connected', async () => {
+      connEl.textContent = 'online';
+      connEl.className = 'connection-status online';
+      notify.show('已连接 Gateway');
+      logPanel.log('success', '[Gateway] 已连接');
+
+      // 初始刷新
+      try {
+        logPanel.log('info', '[Gateway] 正在获取伙伴和委托数据...');
+        await dataSource.refresh();
+        refreshTracker.track('connected handler - data:updated [index.html]');
+        syncDataToUI();
+        logPanel.log('lifecycle', `[Gateway] 数据就绪: ${dataSource._agents.length} 个伙伴, ${dataSource._activeSessions.length} 个活跃委托`);
+      } catch (err) {
+        logPanel.log('error', `[Gateway] 初始数据获取失败: ${err.message}`);
+        syncDataToUI(); // 兜底：确保即使 refresh 失败 UI 也能正确清空 loading 状态
+      }
+
+      // 订阅推送事件
+      dataSource.subscribePush();
+      logPanel.log('lifecycle', '[Gateway] 推送事件已订阅 (agent/chat/approval/health)');
+
+      // 5s 轮询插件调试日志（guard 防多次重连重复注册）
+      if (!gateway._logPollStarted) {
+        gateway._logPollStarted = true;
+        let lastLogId = 0;
+        const LOG_POLL_INTERVAL = 5000;
+        const pollServerLogs = async () => {
+          if (!gateway.connected || !logPanel._serverMode) return;
+          try {
+            const result = await gateway.pollLogs(lastLogId);
+            if (result.entries?.length > 0) {
+              for (const entry of result.entries) {
+                const type = mapCategoryToType(entry.cat);
+                logPanel.log(type, `[${entry.cat}] ${entry.msg}`);
+              }
+              lastLogId = result.latestId;
+            }
+          } catch { /* 静默失败 */ }
+        };
+        pollServerLogs(); // 立即获取一次
+        setInterval(pollServerLogs, LOG_POLL_INTERVAL);
+      }
+
+      // 获取健康状态
+      try { await dataSource.getHealth(); } catch (e) { console.warn('[Gateway] getHealth 失败', e); }
+
+      // 获取模型列表
+      try {
+        const models = await dataSource.getModels();
+        controlPanel.setModels(models);
+      } catch (e) { console.warn('[Gateway] getModels 失败', e); }
+
+      // usage 初始拉取（轮询由 DataRouter.startPolling 统一管理）
+      try { await dataSource.refreshUsage(); } catch (e) { console.warn('[Gateway] refreshUsage 失败', e); }
+    });
+    gateway.on('disconnected', () => {
+      connEl.textContent = 'disconnected';
+      connEl.className = 'connection-status offline';
+      logPanel.log('warn', '[Gateway] 连接断开');
+    });
+
+    // --- 推送事件监听 ---
+
+    // chat 推送 → 实时追加到 Timeline
+    dataSource.on('push:chat', ({ sessionKey, step }) => {
+      if (timeline.visible && timeline.sessionKey === sessionKey) {
+        timeline.appendStep(step);
+      }
+      logPanel.log('info', `[Push:chat] 实时消息 → ${sessionKey.split(':')[1] || sessionKey}`);
+    });
+
+    // agent 推送 → 防抖 refresh 后自动 syncToUI
+    dataSource.on('push:refreshed', () => {
+      // push:refreshed 保留用于日志等扩展，syncToUI 已由 data:updated 统一驱动
+    });
+
+    // DataRouter 每次 refreshSessions 完成后触发，统一驱动 UI 更新
+    dataSource.on('data:updated', () => {
+      refreshTracker.track('data:updated handler [index.html]');
+      syncDataToUI();
+    });
+
+    // approval 推送 → 通知 + 按钮启用
+    dataSource.on('push:approval', (approval) => {
+      notify.show(`${approval.toolName} 需要审批`);
+      logPanel.log('warn', `[Push:approval] 审批请求: ${approval.toolName} (${approval.requestId})`);
+      controlPanel.setPendingApproval(approval.requestId);
+    });
+
+    // health 推送 → 状态指示（只在状态变化时记录日志）
+    let _lastHealthOk = null;
+    dataSource.on('push:health', (health) => {
+      const isOk = health.status === 'ok' || health.ok === true;
+      connEl.textContent = isOk ? 'healthy' : health.status || 'unknown';
+      connEl.className = `connection-status ${isOk ? 'online' : 'offline'}`;
+
+      if (_lastHealthOk !== isOk) {
+        const arrow = _lastHealthOk === null ? '' : ` (${_lastHealthOk ? 'ok' : 'down'} → ${isOk ? 'ok' : 'down'})`;
+        logPanel.log(isOk ? 'success' : 'error', `[Push:health] 状态${isOk ? '正常' : '异常'}${arrow}`);
+        _lastHealthOk = isOk;
+      }
+    });
+
+    // --- syncDataToUI: 从 dataSource 同步到 Workshop UI ---
+    function syncDataToUI() {
+      refreshTracker.track('syncDataToUI [index.html]');
+
+      // Metrics → ScoreBar + CostPanel
+      const m = dataSource.getMetrics();
+      scoreBar.update({
+        agents: m.agents,
+        tasks: m.activeSessions,
+        completed: m.completedSessions,
+        score: m.totalTokens,
+      });
+      costPanel.update(m);
+
+      // 同步刷新 Workshop 面板
+      if (workshop.visible) {
+        workshop.refresh();
+      }
+    }
+
+    // --- 服务端日志轮询（仅在服务端模式时拉取） ---
+    setInterval(async () => {
+      if (!logPanel._serverMode) return;
+      try {
+        const result = await dataSource.tailLogs(logPanel._logCursor);
+        if (result?.lines?.length) {
+          logPanel.appendServerLogs(result.lines);
+          logPanel._logCursor = result.cursor;
+        }
+      } catch { }
+    }, 10000);
+
+    // --- Mock 日志轮询（仅在 Mock 模式下拉取） ---
+    let _mockLogCursor = 0;
+    if (mockMode) {
+      setInterval(async () => {
+        try {
+          const resp = await fetch(`/api/mock-log/logs?sinceId=${_mockLogCursor}`);
+          const result = await resp.json();
+          if (result.entries?.length) {
+            result.entries.forEach(entry => {
+              logPanel.log(mapCategoryToType(entry.cat), `[${entry.cat}] ${entry.msg}`);
+            });
+            _mockLogCursor = result.latestId;
+          }
+        } catch { }
+      }, 3000);
+    }
+
+    // --- Start ---
+    gateway.connect();
+    logPanel.log('lifecycle', '[Lifecycle] 开始连接...');
+
+    // ============================================================
+    // 辅助函数
+    // ============================================================
+
+    /**
+     * 将日志分类映射到 LogPanel 类型
+     * @param {string} cat - 日志分类 (init/hook/rpc/error)
+     * @returns {string} LogPanel 类型
+     */
+    function mapCategoryToType(cat) {
+      switch (cat) {
+        case 'init': return 'lifecycle';
+        case 'hook': return 'info';
+        case 'rpc': return 'info';
+        case 'error': return 'error';
+        default: return 'info';
+      }
+    }
+  </script>
+</body>
+
+</html>

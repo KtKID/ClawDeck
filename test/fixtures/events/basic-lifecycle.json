@@ -1,0 +1,282 @@
+{
+  "name": "basic-lifecycle",
+  "description": "单 agent 完整生命周期：session_start → LLM 请求/响应 → 工具调用/结果 → 第二轮 LLM → agent_end → session_end",
+  "events": [
+    {
+      "type": "session_start",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "agentId": "main",
+        "timestamp": 1772934013580
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 200,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934013585
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934013586
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934013586
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 50,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934013600
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 1000,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 500, "output": 200, "cacheRead": 0, "cacheWrite": 50, "total": 750 },
+        "timestamp": 1772934014600
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 100,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 2,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "read",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "args": {
+            "path": "/src/app.ts"
+          }
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934014700
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "params": { "path": "/src/app.ts" },
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934014710
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 200,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 3,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "read",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "meta": "from /src/app.ts",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "export function app() { return 'hello'; }"
+              }
+            ]
+          }
+        },
+        "timestamp": 1772934014910
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "export function app() { return 'hello'; }"
+            }
+          ]
+        },
+        "durationMs": 210,
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934014920
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 100,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934015020
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 100,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 4,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "edit",
+          "toolCallId": "call_54a131070aa74a04bef01977",
+          "args": {
+            "path": "/src/app.ts",
+            "old_string": "hello",
+            "new_string": "world"
+          }
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934015120
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "edit",
+        "params": { "path": "/src/app.ts", "old_string": "hello", "new_string": "world" },
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_54a131070aa74a04bef01977",
+        "timestamp": 1772934015130
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 150,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 5,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "edit",
+          "toolCallId": "call_54a131070aa74a04bef01977",
+          "meta": "in /src/app.ts",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "Successfully edited /src/app.ts"
+              }
+            ]
+          }
+        },
+        "timestamp": 1772934015280
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "edit",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully edited /src/app.ts"
+            }
+          ]
+        },
+        "durationMs": 160,
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_54a131070aa74a04bef01977",
+        "timestamp": 1772934015290
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 200,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934015490
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 800,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 800, "output": 150, "cacheRead": 200, "cacheWrite": 0, "total": 1150 },
+        "timestamp": 1772934016290
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 50,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 6,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "end",
+          "endedAt": 1772934016340
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934016340
+      }
+    },
+    {
+      "type": "agent_end",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 2800,
+        "timestamp": 1772934016350
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "messageCount": 4,
+        "timestamp": 1772934016450
+      }
+    }
+  ]
+}

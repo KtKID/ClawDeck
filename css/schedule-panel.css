@@ -1,0 +1,218 @@
+/* ===== 定时任务侧栏 ===== */
+/* 移植自 docs/pic/minimax效果/indexAI建议v1.html */
+/* 依赖 workshop.css 中定义的 CSS 变量（--bg-card, --border-wood 等） */
+
+.schedule-sidebar {
+    background: var(--bg-card);
+    border: 3px solid var(--border-wood);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: var(--shadow-card);
+    height: fit-content;
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 260px;
+    z-index: 1001;
+    transition: all 0.3s ease;
+}
+
+/* 折叠状态 */
+.schedule-sidebar.collapsed {
+    width: auto;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.schedule-sidebar.collapsed .schedule-list,
+.schedule-sidebar.collapsed .schedule-sidebar-empty {
+    display: none;
+}
+
+.schedule-sidebar.collapsed .schedule-sidebar-title {
+    margin-bottom: 0;
+}
+
+.schedule-sidebar.collapsed .schedule-collapse-btn {
+    transform: rotate(180deg);
+}
+
+.schedule-sidebar-title {
+    font-family: var(--font-main);
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.schedule-collapse-btn {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    line-height: 1;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.schedule-item:hover {
+    background: var(--bg-card);
+    box-shadow: 2px 2px 0 rgba(74, 59, 50, 0.1);
+}
+
+.schedule-item::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 32px;
+    bottom: -16px;
+    width: 2px;
+    background: var(--border-wood-light);
+    opacity: 0.5;
+}
+
+.schedule-item:last-child::before {
+    display: none;
+}
+
+.schedule-time-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--border-wood-light);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+.schedule-item.daily .schedule-time-marker {
+    background: var(--status-info);
+}
+
+.schedule-item.one-time .schedule-time-marker {
+    background: var(--accent-coral);
+}
+
+.schedule-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.schedule-item-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.schedule-item-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.schedule-tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.schedule-tag.daily {
+    background: rgba(107,155,210, 0.15);
+    color: var(--status-info);
+}
+
+.schedule-tag.one-time {
+    background: rgba(224,122,95, 0.15);
+    color: var(--accent-coral);
+}
+
+.schedule-sidebar-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* 响应式：小屏幕时不浮动 */
+@media (max-width: 1200px) {
+    .schedule-sidebar {
+        position: static;
+        width: 100%;
+        margin-top: 16px;
+    }
+}
+
+/* ============================================================
+   定时任务状态扩展（数据对接 2026-03-13）
+   ============================================================ */
+
+/* 禁用任务灰显 */
+.schedule-item.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* 上次运行状态图标 */
+.cron-status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: auto;
+    line-height: 1;
+    cursor: default;
+}
+.cron-status.ok     { color: var(--status-ok, #22c55e); }
+.cron-status.error  { color: var(--accent-coral, #ff6b6b); }
+.cron-status.skipped{ color: var(--text-dim, #a0a0b0); }
+.cron-status.none   { color: var(--text-muted, #8888a0); }
+
+/* 运行中动画圆点 */
+.cron-running-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--status-info, #4a9eff);
+    animation: cron-pulse 1.2s ease-in-out infinite;
+}
+@keyframes cron-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* recurring 类型标签（对齐旧 daily 蓝色，使用半透明背景） */
+.schedule-tag.recurring {
+    background: rgba(74, 158, 255, 0.15);
+    color: var(--status-info, #4a9eff);
+}

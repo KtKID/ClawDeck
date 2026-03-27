@@ -1,0 +1,182 @@
+{
+  "name": "all-event-types",
+  "description": "11 种事件类型各一条，基于真实录制数据格式",
+  "events": [
+    {
+      "type": "session_start",
+      "delay": 0,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "agentId": "main",
+        "timestamp": 1772934013580
+      }
+    },
+    {
+      "type": "llm_input",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "timestamp": 1772934013585
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 1,
+        "stream": "lifecycle",
+        "data": {
+          "phase": "start",
+          "startedAt": 1772934013586
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934013586
+      }
+    },
+    {
+      "type": "transcript_update",
+      "delay": 50,
+      "params": {
+        "sessionFile": "/Users/xgt/.openclaw/agents/main/sessions/ceca7ff1-7442-4540-b54a-b651bc6e170e.jsonl",
+        "timestamp": 1772934013600
+      }
+    },
+    {
+      "type": "llm_output",
+      "delay": 500,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "provider": "anthropic",
+        "model": "claude-opus-4-6",
+        "usage": { "input": 500, "output": 200, "cacheRead": 0, "cacheWrite": 50, "total": 750 },
+        "timestamp": 1772934014100
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 10,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 2,
+        "stream": "tool",
+        "data": {
+          "phase": "start",
+          "name": "read",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "args": {
+            "path": "/src/main.ts"
+          }
+        },
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "timestamp": 1772934014110
+      }
+    },
+    {
+      "type": "before_tool_call",
+      "delay": 5,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "params": { "path": "/src/main.ts" },
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934014115
+      }
+    },
+    {
+      "type": "raw_agent_event",
+      "delay": 50,
+      "params": {
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "seq": 3,
+        "stream": "tool",
+        "data": {
+          "phase": "result",
+          "name": "read",
+          "toolCallId": "call_877d950c31d1457a85bc374f",
+          "meta": "from /src/main.ts",
+          "isError": false,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "// main.ts content..."
+              }
+            ]
+          }
+        },
+        "timestamp": 1772934014165
+      }
+    },
+    {
+      "type": "after_tool_call",
+      "delay": 10,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "toolName": "read",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "// main.ts content..."
+            }
+          ]
+        },
+        "durationMs": 60,
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "toolCallId": "call_877d950c31d1457a85bc374f",
+        "timestamp": 1772934014175
+      }
+    },
+    {
+      "type": "subagent_spawned",
+      "delay": 100,
+      "params": {
+        "childSessionKey": "agent:main:sub:research:abc123",
+        "agentId": "main",
+        "label": "Research Helper",
+        "mode": "research",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "timestamp": 1772934014300
+      },
+      "_note": "罕见场景：真实录制中未出现 subagent 事件"
+    },
+    {
+      "type": "subagent_ended",
+      "delay": 500,
+      "params": {
+        "targetSessionKey": "agent:main:sub:research:abc123",
+        "outcome": "ok",
+        "runId": "7e1da63c-60fd-4392-8cbd-4cc8fbefc747",
+        "timestamp": 1772934014800
+      },
+      "_note": "罕见场景：真实录制中未出现 subagent 事件"
+    },
+    {
+      "type": "agent_end",
+      "delay": 200,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "success": true,
+        "durationMs": 1500,
+        "timestamp": 1772934015000
+      }
+    },
+    {
+      "type": "session_end",
+      "delay": 100,
+      "params": {
+        "sessionId": "ceca7ff1-7442-4540-b54a-b651bc6e170e",
+        "sessionKey": "agent:main:feishu:direct:ou_49438f64bf8fa8d1c646955b7825f3d7",
+        "messageCount": 5,
+        "timestamp": 1772934015100
+      }
+    }
+  ]
+}
