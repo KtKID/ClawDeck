@@ -1,5 +1,10 @@
 {
   "id": "clawdeck",
   "name": "ClawDeck",
-  "description": "OpenClaw 任务看板与可视化交互层插件"
+  "description": "OpenClaw 任务看板与可视化交互层插件",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
 }
