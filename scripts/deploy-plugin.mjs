@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-// scripts/deploy-plugin.mjs — 将 ClawDeck 插件部署到 OpenClaw extensions 目录
+// scripts/deploy-plugin.mjs — 生成 ClawDeck 标准插件产物目录
 //
 // 用法：
-//   node scripts/deploy-plugin.mjs                     → 全局安装 (~/.openclaw/extensions/clawdeck/)
+//   node scripts/deploy-plugin.mjs                     → 标准产物 (dist/plugin-package/clawdeck/)
 //   node scripts/deploy-plugin.mjs --workspace /path   → 工作区安装 (<path>/.openclaw/extensions/clawdeck/)
 //   node scripts/deploy-plugin.mjs --target /custom    → 自定义目标路径
 
@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..");
+const DEFAULT_PACKAGE_DIR = path.join(PROJECT_ROOT, "dist", "plugin-package", "clawdeck");
 
 // --- 解析参数 ---
 const args = process.argv.slice(2);
@@ -35,9 +36,7 @@ if (args.includes("--target")) {
   }
   targetDir = path.resolve(ws, ".openclaw", "extensions", "clawdeck");
 } else {
-  // 默认全局安装
-  const home = process.env.HOME || process.env.USERPROFILE;
-  targetDir = path.resolve(home, ".openclaw", "extensions", "clawdeck");
+  targetDir = DEFAULT_PACKAGE_DIR;
 }
 
 // --- 定义要复制的内容 ---
@@ -88,20 +87,21 @@ function cleanDir(dir) {
 
 // --- 执行部署 ---
 
-console.log(`\n  ClawDeck 插件部署`);
+console.log(`\n  ClawDeck 插件产物生成`);
 console.log(`  源目录:   ${PROJECT_ROOT}`);
 console.log(`  目标目录: ${targetDir}\n`);
 
-// 安全检查：防止源目录和目标目录相同（会先删除整个项目目录）
+// 安全检查：防止误删源码目录；默认标准产物目录是唯一允许的项目内输出位置
 const srcResolved = path.resolve(PROJECT_ROOT);
 const destResolved = path.resolve(targetDir);
-if (srcResolved === destResolved || destResolved.startsWith(srcResolved + path.sep)) {
-  console.error(`\n  ❌ 错误：源目录与目标目录相同或目标是源的子目录！`);
+const defaultPackageResolved = path.resolve(DEFAULT_PACKAGE_DIR);
+const isDefaultPackageDir = destResolved === defaultPackageResolved;
+if (srcResolved === destResolved || (destResolved.startsWith(srcResolved + path.sep) && !isDefaultPackageDir)) {
+  console.error(`\n  ❌ 错误：目标目录不能直接写到源码目录内部。`);
   console.error(`  源目录: ${srcResolved}`);
   console.error(`  目标目录: ${destResolved}`);
-  console.error(`\n  这通常意味着项目直接放在了 OpenClaw 插件目录下。`);
-  console.error(`  请将项目克隆到其他路径（如 ~/dev/clawdeck），再运行 deploy。`);
-  console.error(`  或使用 --target 指定不同的目标路径。\n`);
+  console.error(`\n  允许的项目内默认输出目录只有: ${defaultPackageResolved}`);
+  console.error(`  如需写入其他位置，请使用 --target 指定源码目录外的路径。\n`);
   process.exit(1);
 }
 
@@ -137,9 +137,10 @@ for (const dir of FRONTEND_DIRS) {
   console.log(`  复制 ${dir}/`);
 }
 
-console.log(`\n  部署完成!`);
-console.log(`  插件路径: ${targetDir}`);
+console.log(`\n  标准插件产物已生成!`);
+console.log(`  插件根目录: ${targetDir}`);
 console.log(`  入口文件: ${path.join(targetDir, "index.ts")}`);
-console.log(`\n  下一步:`);
-console.log(`  1. 重启 OpenClaw Gateway`);
-console.log(`  2. 访问 http://<gateway>/plugins/clawdeck/\n`);
+console.log(`\n  建议下一步:`);
+console.log(`  1. openclaw plugins install ${targetDir}`);
+console.log(`  2. openclaw plugins enable clawdeck`);
+console.log(`  3. openclaw gateway restart\n`);
