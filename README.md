@@ -32,20 +32,40 @@ ClawDeck reads real-time data from OpenClaw Gateway (WebSocket push + polling fa
 
 ## Quick Start
 
-### Option 1: Plugin Install (Recommended)
+### Option 1: Official Plugin Install (Recommended)
 
 ```bash
-# Clone repo to OpenClaw plugins directory
-git clone https://your-repo/ClawDeck.git /path/to/openclaw/plugins/clawdeck
+# Generate the standard plugin package inside this repository
+npm run package:plugin
+
+# Install from the generated package directory
+openclaw plugins install ./dist/plugin-package/clawdeck
 
 # Enable plugin
-openclaw plugin enable clawdeck
+openclaw plugins enable clawdeck
 
 # Restart Gateway
 openclaw gateway restart
 ```
 
+The default package output directory is `./dist/plugin-package/clawdeck`. The packaging step only writes there by default and will not install directly into your OpenClaw home automatically.
+
+For normal users, do not use `install.sh` or run `node scripts/deploy-plugin.mjs` directly. Those paths are deprecated for user installation and only kept for internal development or historical compatibility.
+
 Then open `http://localhost:<port>/plugins/clawdeck/` (run `openclaw web` to find the actual port).
+
+### Dev Link Install (Development Only)
+
+If you need a development-time workflow, use the official link mode:
+
+```bash
+npm run package:plugin
+openclaw plugins install -l ./dist/plugin-package/clawdeck
+openclaw plugins enable clawdeck
+openclaw gateway restart
+```
+
+The `-l` flag installs the plugin as a link for development and debugging. It is not the primary install path for normal users. Keep the link target on `./dist/plugin-package/clawdeck` instead of the repository root.
 
 ### Option 2: Standalone Dev Server
 
