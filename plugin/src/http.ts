@@ -41,6 +41,16 @@ function createHandler(api: OpenClawPluginApi) {
     const url = parseUrl(req.url);
     if (!url) return false;
 
+    // 先把目录入口规范化到带尾斜杠的 URL，避免首页相对资源解析到 /plugins/*
+    if ((req.method === "GET" || req.method === "HEAD") && url.pathname === PLUGIN_PATH) {
+      res.writeHead(308, {
+        Location: `${PLUGIN_PATH}/${url.search}`,
+        "Cache-Control": "no-store",
+      });
+      res.end();
+      return true;
+    }
+
     // 路径解析�?plugins/clawdeck/ �?index.html
     let relPath = url.pathname.slice(PLUGIN_PATH.length);
     if (relPath === "" || relPath === "/") relPath = "/index.html";
