@@ -201,9 +201,11 @@ print_install_summary() {
   echo -e "${CYAN}源码目录：${NC} $src_dir"
   echo ""
   echo -e "${YELLOW}下一步：${NC}"
-  echo -e "  1. 重启 Gateway：${GREEN}openclaw gateway restart${NC}"
-  echo -e "  2. 浏览器打开：${GREEN}http://localhost:18789/plugins/clawdeck/${NC}"
-  echo -e "  3. 如果端口不是 18789，请运行 ${GREEN}openclaw web${NC} 查看实际端口"
+  echo -e "  1. 启用插件：${GREEN}openclaw plugins enable clawdeck${NC}"
+  echo -e "     或使用配置命令：${GREEN}openclaw config set plugins.entries.clawdeck.enabled true --strict-json${NC}"
+  echo -e "  2. 重启 Gateway：${GREEN}openclaw gateway restart${NC}"
+  echo -e "  3. 浏览器打开：${GREEN}http://localhost:18789/plugins/clawdeck/${NC}"
+  echo -e "  4. 如果端口不是 18789，请运行 ${GREEN}openclaw web${NC} 查看实际端口"
   echo ""
 }
 
