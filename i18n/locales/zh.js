@@ -45,6 +45,16 @@ export default {
   'gateway.btn_reconnect': '重新连接',
   'gateway.btn_disconnect': '断开',
   'gateway.btn_stop': '停止',
+  'gateway.err.token_mismatch': 'Token 不匹配，请检查 Token 是否正确',
+  'gateway.err.token_missing': '网关需要认证，请填写 Token 后连接',
+  'gateway.err.password_mismatch': '密码错误',
+  'gateway.err.rate_limited': '认证尝试过于频繁，请稍后再试',
+  'gateway.err.pairing_required': '此设备需要网关主机的配对批准，请在网关主机上执行 openclaw devices 批准此设备',
+  'gateway.err.device_identity_required': '需要设备标识（请使用 HTTPS 或在网关主机上直接访问）',
+  'gateway.err.device_token_mismatch': '设备 Token 已失效，正在重新认证...',
+  'gateway.err.connect_failed': '无法连接到网关，请检查地址和网关是否运行',
+  'gateway.err.handshake_timeout': '握手超时，网关无响应',
+  'gateway.err.unknown_auth': '认证失败',
 
   // ── 工单统计条 ────────────────────────────────────────
   'stats.pending_orders': '需要批准的工单',

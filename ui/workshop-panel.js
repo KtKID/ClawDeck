@@ -394,9 +394,7 @@ export class WorkshopPanel {
     const connectLabel = isBusy ? '重新连接' : '连接';
     const disconnectDisabled = !isBusy;
 
-    const errorHint = isAuthFailed && this._gateway?.lastError
-      ? `<div class="gw-error-hint">${this._gateway.lastError}</div>`
-      : '';
+    const errorHint = this._formatGatewayError(status);
 
     return `
       <div class="workshop-cork-card gateway">
@@ -418,6 +416,56 @@ export class WorkshopPanel {
         </div>
       </div>
     `;
+  }
+
+  /** 根据错误码生成用户友好的错误提示 HTML（参考官方 formatConnectError） */
+  _formatGatewayError(status) {
+    const gw = this._gateway;
+    if (!gw) return '';
+
+    const errorCode = gw.lastErrorCode || '';
+    const rawError = gw.lastError || '';
+
+    // 仅在有错误信息且非正常连接时显示
+    if (!rawError || status === 'connected') return '';
+
+    // 错误码 → i18n key 映射
+    const codeToKey = {
+      AUTH_TOKEN_MISMATCH: 'gateway.err.token_mismatch',
+      AUTH_TOKEN_MISSING: 'gateway.err.token_missing',
+      AUTH_TOKEN_NOT_CONFIGURED: 'gateway.err.token_missing',
+      AUTH_REQUIRED: 'gateway.err.token_missing',
+      AUTH_UNAUTHORIZED: 'gateway.err.unknown_auth',
+      AUTH_PASSWORD_MISMATCH: 'gateway.err.password_mismatch',
+      AUTH_PASSWORD_MISSING: 'gateway.err.token_missing',
+      AUTH_RATE_LIMITED: 'gateway.err.rate_limited',
+      PAIRING_REQUIRED: 'gateway.err.pairing_required',
+      DEVICE_IDENTITY_REQUIRED: 'gateway.err.device_identity_required',
+      CONTROL_UI_DEVICE_IDENTITY_REQUIRED: 'gateway.err.device_identity_required',
+      AUTH_DEVICE_TOKEN_MISMATCH: 'gateway.err.device_token_mismatch',
+      DEVICE_AUTH_INVALID: 'gateway.err.unknown_auth',
+      DEVICE_AUTH_SIGNATURE_EXPIRED: 'gateway.err.unknown_auth',
+      DEVICE_AUTH_SIGNATURE_INVALID: 'gateway.err.unknown_auth',
+    };
+
+    let message;
+    if (errorCode && codeToKey[errorCode]) {
+      message = t(codeToKey[errorCode]);
+    } else if (rawError.includes('timeout') || rawError.includes('Timeout')) {
+      message = t('gateway.err.handshake_timeout');
+    } else if (rawError.includes('connect') || rawError.includes('fetch') || status === 'disconnected' || status === 'reconnecting') {
+      message = t('gateway.err.connect_failed');
+    } else if (status === 'auth_failed') {
+      message = t('gateway.err.unknown_auth');
+    } else {
+      message = rawError;
+    }
+
+    // 配对提示需要额外醒目标注
+    const isPairing = errorCode === 'PAIRING_REQUIRED';
+    const extraClass = isPairing ? ' gw-error-pairing' : '';
+
+    return `<div class="gw-error-hint${extraClass}">${this._escapeHtml(message)}</div>`;
   }
 
   _syncGatewayDraft(url, token) {
@@ -938,6 +986,13 @@ export class WorkshopPanel {
       if (handlers.disconnectClick) element.querySelector('.gw-btn.disconnect')?.removeEventListener('click', handlers.disconnectClick);
     });
     this._gatewayEventListeners = [];
+  }
+
+  _escapeHtml(str) {
+    if (!str) return '';
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
   }
 
   /** 清理组件资源 */

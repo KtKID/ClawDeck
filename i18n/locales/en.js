@@ -45,6 +45,16 @@ export default {
   'gateway.btn_reconnect': 'Reconnect',
   'gateway.btn_disconnect': 'Disconnect',
   'gateway.btn_stop': 'Stop',
+  'gateway.err.token_mismatch': 'Token mismatch — please check your token',
+  'gateway.err.token_missing': 'Authentication required — please enter a token',
+  'gateway.err.password_mismatch': 'Password incorrect',
+  'gateway.err.rate_limited': 'Too many auth attempts — please wait',
+  'gateway.err.pairing_required': 'Device pairing required — approve this device on the gateway host via: openclaw devices',
+  'gateway.err.device_identity_required': 'Device identity required (use HTTPS or access from gateway host)',
+  'gateway.err.device_token_mismatch': 'Device token expired, re-authenticating...',
+  'gateway.err.connect_failed': 'Cannot connect to gateway — check URL and gateway status',
+  'gateway.err.handshake_timeout': 'Handshake timeout — gateway not responding',
+  'gateway.err.unknown_auth': 'Authentication failed',
 
   // ── Stats Bar ─────────────────────────────────────────
   'stats.pending_orders': 'Pending',

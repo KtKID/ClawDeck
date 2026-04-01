@@ -389,6 +389,30 @@ body.workshop-view::before {
     animation: pulse 1s ease-in-out infinite;
 }
 
+/* 连接错误提示 — 红色文字 */
+.workshop-cork-card.gateway .gw-error-hint {
+    font-size: 0.7rem;
+    color: var(--status-error, #D64545);
+    padding: 4px 8px;
+    margin-bottom: 6px;
+    line-height: 1.4;
+    border-left: 3px solid var(--status-error, #D64545);
+    background: rgba(214, 69, 69, 0.06);
+    border-radius: 0 4px 4px 0;
+}
+
+/* 配对提示 — 更醒目 */
+.workshop-cork-card.gateway .gw-error-pairing {
+    color: #C9A227;
+    border-left-color: #C9A227;
+    background: rgba(201, 162, 39, 0.08);
+}
+
+/* Token 输入框错误高亮 */
+.workshop-cork-card.gateway .gw-input-error {
+    border-color: var(--status-error, #D64545);
+}
+
 .workshop-cork-card.gateway .gw-row {
     display: flex;
     gap: 6px;
