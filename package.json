@@ -1,8 +1,10 @@
 {
   "name": "clawdeck-dev",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "ver": "node -e \"const p=require('./package.json');const h=require('child_process').execSync('git rev-parse --short HEAD').toString().trim();console.log('ClawDeck v'+p.version+' ('+h+')')\"",
     "test": "node scripts/run-test.mjs --all",
     "test:existing": "node scripts/run-test.mjs test/server.test.cjs test/telemetry-routing.test.mjs test/sender.test.mjs",
     "test:file": "node scripts/run-test.mjs",
