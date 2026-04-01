@@ -126,6 +126,7 @@ export default {
   'chat.loading': '⏳ 加载中...',
   'chat.no_sessions_icon': '🌙',
   'chat.no_sessions_text': '暂无活跃委托\n伙伴们都在休息中',
+  'chat.agent_no_sessions': '该伙伴暂无对话记录',
   'chat.no_records': '暂无执行记录\n等待委托开始',
   'chat.load_failed': '⚠️ 加载失败: {{error}}',
   'chat.waiting': '等待中',

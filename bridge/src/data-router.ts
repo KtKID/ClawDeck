@@ -972,8 +972,18 @@ export class DataRouter extends EventEmitter {
               // 将 thinking 内容提升到 data 顶层，供 _stepToMetaHTML case 'thinking' 读取
               step.data = { ...step.data, thinking: step.summary, thinkingSignature: msgContent[0]?.thinkingSignature };
             } else {
+              // B8: 混合内容（text + toolCall）— 提取文本并标注工具调用
               step.type = 'llm_output';
-              step.summary = this._extractTextContent(msg.message);
+              const textPart = this._extractTextContent(msg.message);
+              const toolCalls = Array.isArray(msgContent)
+                ? msgContent.filter((c: any) => c.type === 'toolCall' || c.type === 'tool_use')
+                : [];
+              if (toolCalls.length > 0 && textPart) {
+                const toolNames = toolCalls.map((c: any) => c.name || 'unknown').join(', ');
+                step.summary = `${textPart}\n🔧 ${toolNames}`;
+              } else {
+                step.summary = textPart;
+              }
             }
           } else if (msg.message?.role === 'toolResult') {
             step.type = 'tool_result';

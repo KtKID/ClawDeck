@@ -6,6 +6,7 @@ export class DetailPanel {
     this.el.className = 'detail-panel';
     container.appendChild(this.el);
     this._currentEntity = null;
+    this._currentActions = []; // D1 fix: 保存 actions 引用
     this._onAction = null;
     this._telemetryManager = null;
     this._currentTab = 'overview';
@@ -21,8 +22,12 @@ export class DetailPanel {
     return this;
   }
 
-  show(entity, actions = []) {
+  show(entity, actions) {
     this._currentEntity = entity;
+    // D1 fix: 仅在显式传入时更新 actions，自动刷新时保留之前的
+    if (actions !== undefined) {
+      this._currentActions = actions || [];
+    }
     this.el.classList.add('open');
 
     // Tab header
@@ -37,7 +42,7 @@ export class DetailPanel {
 
     // Render current tab
     if (this._currentTab === 'overview') {
-      html += this._renderOverview(entity, actions);
+      html += this._renderOverview(entity, this._currentActions);
     } else if (this._currentTab === 'metrics') {
       html += this._renderMetrics(entity);
     }
@@ -45,11 +50,11 @@ export class DetailPanel {
     html += '</div>';
     this.el.innerHTML = html;
 
-    // Bind tab buttons
+    // Bind tab buttons — D1 fix: 不再传递 actions 参数，使用已保存的 _currentActions
     this.el.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         this._currentTab = btn.dataset.tab;
-        this.show(this._currentEntity, actions);
+        this.show(this._currentEntity);
       });
     });
 
@@ -67,6 +72,7 @@ export class DetailPanel {
   hide() {
     this.el.classList.remove('open');
     this._currentEntity = null;
+    this._currentActions = [];
     this._stopAutoUpdate();
   }
 
@@ -112,8 +118,12 @@ export class DetailPanel {
       return '<div class="metrics-empty">No active session</div>';
     }
 
-    const stats = tracker.stats;
-    const events = tracker.events.slice(-10); // Last 10 events
+    // D2 fix: 安全访问 stats 和 events
+    const stats = tracker.stats || {};
+    const events = Array.isArray(tracker.events) ? tracker.events.slice(-10) : [];
+    const totalTokens = stats.totalTokens || {};
+    const toolCallStats = stats.toolCalls || { success: 0, failed: 0 };
+    const errorStats = stats.errors || { total: 0, byType: {} };
 
     let html = '';
 
@@ -123,19 +133,19 @@ export class DetailPanel {
         <div class="metrics-title">Token Usage</div>
         <div class="metrics-grid">
           <div class="metric-item">
-            <div class="metric-value">${this._formatNumber(stats.totalTokens.input)}</div>
+            <div class="metric-value">${this._formatNumber(totalTokens.input || 0)}</div>
             <div class="metric-label">Input</div>
           </div>
           <div class="metric-item">
-            <div class="metric-value">${this._formatNumber(stats.totalTokens.output)}</div>
+            <div class="metric-value">${this._formatNumber(totalTokens.output || 0)}</div>
             <div class="metric-label">Output</div>
           </div>
           <div class="metric-item">
-            <div class="metric-value">${this._formatNumber(stats.totalTokens.cacheRead)}</div>
+            <div class="metric-value">${this._formatNumber(totalTokens.cacheRead || 0)}</div>
             <div class="metric-label">Cache Read</div>
           </div>
           <div class="metric-item">
-            <div class="metric-value">${this._formatNumber(stats.totalTokens.cacheWrite)}</div>
+            <div class="metric-value">${this._formatNumber(totalTokens.cacheWrite || 0)}</div>
             <div class="metric-label">Cache Write</div>
           </div>
         </div>
@@ -147,8 +157,8 @@ export class DetailPanel {
       <div class="metrics-section">
         <div class="metrics-title">Tool Calls</div>
         <div class="metrics-summary">
-          <span class="success">✓ ${stats.toolCalls.success}</span>
-          <span class="failed">✗ ${stats.toolCalls.failed}</span>
+          <span class="success">✓ ${toolCallStats.success}</span>
+          <span class="failed">✗ ${toolCallStats.failed}</span>
         </div>
         <div class="tool-log">
     `;
@@ -161,18 +171,18 @@ export class DetailPanel {
           html += `
             <div class="tool-item pending">
               <span class="tool-icon">●</span>
-              <span class="tool-name">${this._escape(event.data.name)}</span>
+              <span class="tool-name">${this._escape(event.data?.name || 'unknown')}</span>
               <span class="tool-status">running</span>
             </div>
           `;
         } else if (event.type === 'tool_result') {
-          const statusClass = event.data.success ? 'success' : 'failed';
-          const statusIcon = event.data.success ? '✓' : '✗';
+          const statusClass = event.data?.success ? 'success' : 'failed';
+          const statusIcon = event.data?.success ? '✓' : '✗';
           html += `
             <div class="tool-item ${statusClass}">
               <span class="tool-icon">${statusIcon}</span>
-              <span class="tool-name">${this._escape(event.data.callId)}</span>
-              <span class="tool-duration">${event.data.durationMs}ms</span>
+              <span class="tool-name">${this._escape(event.data?.name || event.data?.callId || 'unknown')}</span>
+              <span class="tool-duration">${event.data?.durationMs || 0}ms</span>
             </div>
           `;
         }
@@ -184,13 +194,13 @@ export class DetailPanel {
     html += '</div></div>';
 
     // Errors section (if any)
-    if (stats.errors.total > 0) {
+    if (errorStats.total > 0) {
       html += `
         <div class="metrics-section errors">
-          <div class="metrics-title">Errors (${stats.errors.total})</div>
+          <div class="metrics-title">Errors (${errorStats.total})</div>
       `;
 
-      for (const [type, count] of Object.entries(stats.errors.byType)) {
+      for (const [type, count] of Object.entries(errorStats.byType || {})) {
         html += `
           <div class="error-item">
             <span class="error-type">${this._escape(type)}</span>
@@ -203,7 +213,7 @@ export class DetailPanel {
     }
 
     // Session duration
-    const duration = tracker.getDurationMs();
+    const duration = typeof tracker.getDurationMs === 'function' ? tracker.getDurationMs() : 0;
     html += `
       <div class="metrics-section">
         <div class="metric-item">
@@ -219,9 +229,9 @@ export class DetailPanel {
   _getFields(entity) {
     const fields = [['Type', entity.type], ['State', entity.state || 'N/A']];
     if (entity.type === 'agent') {
-      if (entity.data.model) fields.push(['Model', entity.data.model]);
-      if (entity.data.tools) fields.push(['Tools', entity.data.tools.join(', ')]);
-      if (entity.data.sessionId) fields.push(['Session', entity.data.sessionId]);
+      if (entity.data?.model) fields.push(['Model', entity.data.model]);
+      if (entity.data?.tools) fields.push(['Tools', entity.data.tools.join(', ')]);
+      if (entity.data?.sessionId) fields.push(['Session', entity.data.sessionId]);
     }
     if (entity.type === 'task') {
       if (entity.progress > 0) fields.push(['Progress', Math.round(entity.progress * 100) + '%']);
@@ -232,7 +242,7 @@ export class DetailPanel {
   _formatNumber(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return String(num);
+    return String(num || 0);
   }
 
   _formatDuration(ms) {
@@ -245,14 +255,14 @@ export class DetailPanel {
     return `${seconds}s`;
   }
 
+  // D3 fix: 自动刷新时不丢失 actions
   _startAutoUpdate(entity) {
     this._stopAutoUpdate();
 
     if (this._currentTab === 'metrics' && entity.type === 'agent') {
-      // Update metrics every 2 seconds
       this._updateInterval = setInterval(() => {
         if (this._currentEntity && this._currentTab === 'metrics') {
-          this.show(this._currentEntity, []);
+          this.show(this._currentEntity); // 不传 actions，使用已保存的 _currentActions
         }
       }, 2000);
     }

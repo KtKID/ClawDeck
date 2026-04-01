@@ -199,16 +199,16 @@ export class CatCard {
 
     // 绑定聊天气泡按钮
     const chatBubble = this.el.querySelector('.cat-chat-bubble');
-    const avatarImg = this.el.querySelector('.cat-avatar-img');
     if (chatBubble && this._props.onChatClick) {
       if (this._handleChatBubble) {
-        chatBubble.removeEventListener('click', this._handleChatBubble);
+        chatBubble.removeEventListener('click', this._handleChatBubble, true);
       }
-      this._handleChatBubble = () => {
+      this._handleChatBubble = (e) => {
+        e.stopPropagation();
         // 传递 sessionKey 而不是 id，因为需要用 sessionKey 打开对话
         this._props.onChatClick(this._props.sessionKey || this._props.id);
       };
-      chatBubble.addEventListener('click', this._handleChatBubble);
+      chatBubble.addEventListener('click', this._handleChatBubble, true);
     }
   }
 
@@ -290,7 +290,7 @@ export class CatCard {
       input.removeEventListener('keypress', this._handleKeypress);
     }
     if (chatBubble && this._handleChatBubble) {
-      chatBubble.removeEventListener('click', this._handleChatBubble);
+      chatBubble.removeEventListener('click', this._handleChatBubble, true);
     }
     if (avatarImg && this._handleAvatarError) {
       avatarImg.removeEventListener('error', this._handleAvatarError);

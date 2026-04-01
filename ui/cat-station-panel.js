@@ -82,6 +82,7 @@ export class CatStationPanel {
           currentTask: agent.currentTask,
           latestStep: agent.latestStep,
           usage: agent.usage,
+          sessionKey: agent.sessionKey,
         });
       });
       return;
@@ -98,7 +99,9 @@ export class CatStationPanel {
           // sessionKey 可能为 null（无活跃 session），由 ChatDrawerPanel 自动选择该 agent 最新 session
           console.log('[CatStation] chat click:', sessionKey, 'agentId:', agent.id);
           if (this.chatDrawerPanel) {
-            this.chatDrawerPanel.toggle(sessionKey || null, agent.id);
+            this.chatDrawerPanel.toggle(sessionKey || null, agent.id).catch(err => {
+              console.error('[CatStation] toggle drawer failed:', err);
+            });
           } else {
             console.warn('[CatStation] chatDrawerPanel not available');
           }

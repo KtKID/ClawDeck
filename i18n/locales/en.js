@@ -126,6 +126,7 @@ export default {
   'chat.loading': '⏳ Loading...',
   'chat.no_sessions_icon': '🌙',
   'chat.no_sessions_text': 'No active tasks\nAgents are resting',
+  'chat.agent_no_sessions': 'No conversations for this agent yet',
   'chat.no_records': 'No records yet\nWaiting for task to start',
   'chat.load_failed': '⚠️ Load failed: {{error}}',
   'chat.waiting': 'Waiting',

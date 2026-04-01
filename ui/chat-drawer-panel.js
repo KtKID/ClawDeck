@@ -95,11 +95,13 @@ export class ChatDrawerPanel {
     this._backdrop.classList.remove('visible');
   }
 
-  /** 切换开/关 */
+  /** 切换开/关（不同 agent 时直接切换，同 agent 时关闭） */
   async toggle(sessionKey, agentId) {
-    if (this._visible) {
+    if (this._visible && (!agentId || agentId === this._currentAgentId)) {
+      // 同一个 agent（或无 agentId）→ 关闭
       this.hide();
     } else {
+      // 未打开或不同 agent → 打开/切换
       await this.show(sessionKey, agentId);
     }
   }
@@ -267,6 +269,20 @@ export class ChatDrawerPanel {
 
     if (targetKey && targetKey !== this._currentSessionKey) {
       this._selectSession(targetKey);
+    } else if (!targetKey && agentId) {
+      // 该 agent 无任何 session，显示空态提示
+      this._currentSessionKey = null;
+      this._renderTabs();
+      this._updateHeaderStatus();
+      const messagesEl = this.el.querySelector('.chat-messages');
+      if (messagesEl) {
+        messagesEl.innerHTML = `
+          <div class="chat-empty">
+            <div class="chat-empty-icon">${t('chat.no_sessions_icon')}</div>
+            <div class="chat-empty-text">${t('chat.agent_no_sessions')}</div>
+          </div>
+        `;
+      }
     } else if (!targetKey) {
       // 清空了 agent filter，切到全部
       this._selectSession(null);
@@ -676,7 +692,8 @@ export class ChatDrawerPanel {
     if (agentId !== this._currentAgentId) {
       this._currentAgentId = agentId;
       this.refreshSidebar();
-      this._renderTabs(); // Agent 变了，tabs 列表也要按新 agent 过滤重绘
+      this._renderDropdown(); // Agent 变了，下拉也要按新 agent 过滤重绘
+      this._renderTabs();
     } else {
       // 仅更新高亮，不重新渲染整条侧边栏
       this.el.querySelectorAll('.chat-agent-avatar').forEach(a => {
@@ -729,9 +746,13 @@ export class ChatDrawerPanel {
     // 加载指定 session 历史
     try {
       const detail = await this._dataSource.getSessionDetail(sessionKey);
+      // 竞态防护：若用户在 await 期间已切走，丢弃过期响应
+      if (sessionKey !== this._currentSessionKey) return;
       const steps = detail?.steps || [];
       this._renderMessages(steps);
     } catch (err) {
+      // 竞态防护：仅当仍为当前 session 时渲染错误
+      if (sessionKey !== this._currentSessionKey) return;
       const messagesElAfter = this.el.querySelector('.chat-messages');
       if (messagesElAfter) {
         messagesElAfter.innerHTML = `
@@ -807,9 +828,12 @@ export class ChatDrawerPanel {
 
   /** 轻量刷新：静默重新获取当前 session 历史，不触发 loading 状态 */
   async _refreshMessages() {
-    if (!this._currentSessionKey) return;
+    const key = this._currentSessionKey;
+    if (!key) return;
     try {
-      const detail = await this._dataSource.getSessionDetail(this._currentSessionKey);
+      const detail = await this._dataSource.getSessionDetail(key);
+      // 竞态防护：若 await 期间用户切走，丢弃过期响应
+      if (key !== this._currentSessionKey) return;
       this._renderMessages(detail?.steps || []);
     } catch { /* 静默失败，不影响已显示内容 */ }
   }
