@@ -6,6 +6,7 @@ import { GW_STATUS, Storage } from '../bridge/gateway-client.js';
 import { WorkshopLogPanel } from './workshop-log-panel.js';
 import { refreshTracker } from './refresh-tracker.js';
 import { SchedulePanel } from './schedule-panel.js';
+import { CronDialog } from './cron-dialog.js';
 import { ChatDrawerPanel } from './chat-drawer-panel.js';
 import { t, toggleLocale, onLocaleChange, getLocale } from '../i18n/index.js';
 
@@ -221,8 +222,20 @@ export class WorkshopPanel {
     // 初始化猫咪栏位区
     this._initCatStation();
 
-    // 初始化定时任务侧边栏
-    this._schedulePanel = new SchedulePanel(this.el);
+    // 初始化 Cron 配置弹窗
+    this._cronDialog = null;
+    if (this._gateway && this._dataSource) {
+      this._cronDialog = new CronDialog(this._gateway, this._dataSource, {
+        onSaved: () => this._refreshSchedulePanel(),
+        onDeleted: () => this._refreshSchedulePanel(),
+      });
+    }
+
+    // 初始化定时任务侧边栏（传入回调打开弹窗）
+    this._schedulePanel = new SchedulePanel(this.el, {
+      onAdd: () => this._cronDialog?.openCreate(),
+      onEdit: (jobId) => this._cronDialog?.openEdit(jobId),
+    });
 
     // 初始化 cron 面板数据 + 订阅更新事件
     // 只监听 data:cron-updated（refreshCronJobs 完成后发出），确保刷新时数据已是最新
@@ -696,8 +709,12 @@ export class WorkshopPanel {
       // 正在运行
       statusDisplayText = t('run.running');
       statusClass = 'working';
-    } else if (runState?.status === 'error' || abortedLastRun) {
-      // 上次异常
+    } else if (runState?.status === 'error') {
+      // 运行时错误
+      statusDisplayText = t('run.last_error');
+      statusClass = 'error';
+    } else if (abortedLastRun && !runState?.status) {
+      // 上次异常（仅在当前无活跃运行状态时显示）
       statusDisplayText = t('run.last_error');
       statusClass = 'error';
     } else if (runState?.status === 'aborted') {

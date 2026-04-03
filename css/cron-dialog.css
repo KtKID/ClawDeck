@@ -1,0 +1,642 @@
+/* ===== Cron 配置弹窗 =====
+   居中浮窗，与 ChatDrawerPanel 风格统一
+   position: fixed 居中，fade+scale 动画
+   ========================================================== */
+
+/* 变量自包含（与 chat-drawer / workshop 一致） */
+.cron-dialog {
+    --bg-primary: #FFFDF5;
+    --bg-secondary: #F5EFE0;
+    --bg-card: #FFF9F0;
+    --border-wood: #8B6914;
+    --border-wood-light: #C4A35A;
+    --status-success: #88B04B;
+    --status-warning: #E07A5F;
+    --status-error: #D64545;
+    --status-info: #6B9BD2;
+    --status-ok: #22c55e;
+    --text-primary: #4A3B32;
+    --text-secondary: #6B5D52;
+    --text-muted: #9A8B7A;
+    --accent-coral: #E07A5F;
+    --accent-yellow: #F4D06F;
+    --shadow-card: 4px 4px 0 rgba(74, 59, 50, 0.15);
+}
+
+/* ===== 遮罩层 ===== */
+.cron-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease;
+    background: rgba(74, 59, 50, 0.25);
+}
+
+.cron-dialog-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ===== 弹窗主体 ===== */
+.cron-dialog {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: min(780px, calc(100vw - 48px));
+    max-height: min(85vh, 720px);
+    z-index: 2101;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 251, 240, 0.97);
+    border: 3px solid var(--border-wood);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(74, 59, 50, 0.25), 0 4px 12px rgba(74, 59, 50, 0.15);
+    overflow: hidden;
+}
+
+@supports (backdrop-filter: blur(1px)) {
+    .cron-dialog {
+        background: rgba(255, 251, 240, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
+
+.cron-dialog.open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+/* ===== 头部 ===== */
+.cron-dialog-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border-wood-light);
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.cron-dialog-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.cron-dialog-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.cron-dialog-tab {
+    padding: 6px 14px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cron-dialog-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.cron-dialog-tab.active {
+    color: var(--border-wood);
+    border-color: var(--border-wood-light);
+    background: var(--bg-secondary);
+}
+
+.cron-dialog-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.cron-dialog-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* ===== 内容区域（可滚动） ===== */
+.cron-dialog-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.cron-dialog-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.cron-dialog-body::-webkit-scrollbar-thumb {
+    background: var(--border-wood-light);
+    border-radius: 3px;
+}
+
+/* ===== 表单区块 ===== */
+.cron-section {
+    margin-bottom: 20px;
+}
+
+.cron-section:last-child {
+    margin-bottom: 0;
+}
+
+.cron-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--border-wood);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-wood-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===== 表单网格 ===== */
+.cron-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.cron-span-2 {
+    grid-column: span 2;
+}
+
+/* ===== 表单字段 ===== */
+.cron-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cron-field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.cron-field label .cron-required {
+    color: var(--accent-coral);
+    margin-left: 2px;
+}
+
+.cron-field input[type="text"],
+.cron-field input[type="number"],
+.cron-field input[type="datetime-local"],
+.cron-field select,
+.cron-field textarea {
+    padding: 8px 10px;
+    border: 2px solid var(--border-wood-light);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.cron-field input:focus,
+.cron-field select:focus,
+.cron-field textarea:focus {
+    border-color: var(--border-wood);
+}
+
+.cron-field input.cron-field-error,
+.cron-field select.cron-field-error,
+.cron-field textarea.cron-field-error {
+    border-color: var(--accent-coral);
+}
+
+.cron-field textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.cron-field-help {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.cron-field-error-msg {
+    font-size: 0.72rem;
+    color: var(--accent-coral);
+}
+
+/* ===== 复选框 ===== */
+.cron-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.cron-checkbox input[type="checkbox"] {
+    accent-color: var(--border-wood);
+    width: 16px;
+    height: 16px;
+}
+
+.cron-checkbox span {
+    font-size: 0.82rem;
+    color: var(--text-primary);
+}
+
+/* ===== Radio 组（调度类型选择） ===== */
+.cron-radio-group {
+    display: flex;
+    gap: 0;
+    border: 2px solid var(--border-wood-light);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cron-radio-group label {
+    flex: 1;
+    padding: 8px 14px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-right: 1px solid var(--border-wood-light);
+}
+
+.cron-radio-group label:last-child {
+    border-right: none;
+}
+
+.cron-radio-group input[type="radio"] {
+    display: none;
+}
+
+.cron-radio-group input[type="radio"]:checked + span {
+    color: var(--bg-primary);
+}
+
+.cron-radio-group label:has(input:checked) {
+    background: var(--border-wood);
+    color: var(--bg-primary);
+}
+
+/* 条件显示的调度字段区域 */
+.cron-schedule-fields {
+    display: none;
+    margin-top: 12px;
+}
+
+.cron-schedule-fields.active {
+    display: block;
+}
+
+/* every 模式：数量 + 单位并排 */
+.cron-every-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.cron-every-row .cron-field {
+    flex: 1;
+}
+
+/* ===== 高级选项（可折叠） ===== */
+.cron-advanced {
+    margin-top: 16px;
+}
+
+.cron-advanced summary {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px 0;
+    user-select: none;
+    list-style: none;
+}
+
+.cron-advanced summary::before {
+    content: '▸ ';
+}
+
+.cron-advanced[open] summary::before {
+    content: '▾ ';
+}
+
+.cron-advanced-content {
+    padding-top: 12px;
+}
+
+/* ===== 芯片（状态标记） ===== */
+.cron-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    gap: 4px;
+}
+
+.cron-chip-ok {
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--status-ok);
+}
+
+.cron-chip-error {
+    background: rgba(214, 69, 69, 0.12);
+    color: var(--status-error);
+}
+
+.cron-chip-skipped {
+    background: rgba(154, 139, 122, 0.15);
+    color: var(--text-muted);
+}
+
+.cron-chip-enabled {
+    background: rgba(107, 155, 210, 0.12);
+    color: var(--status-info);
+}
+
+.cron-chip-disabled {
+    background: rgba(154, 139, 122, 0.12);
+    color: var(--text-muted);
+}
+
+/* ===== 验证状态块 ===== */
+.cron-validation {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(224, 122, 95, 0.08);
+    border: 1px solid rgba(224, 122, 95, 0.25);
+}
+
+.cron-validation-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-coral);
+    margin-bottom: 6px;
+}
+
+.cron-validation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cron-validation-list li {
+    font-size: 0.75rem;
+    color: var(--accent-coral);
+    padding: 2px 0;
+}
+
+.cron-validation-list li a {
+    color: var(--accent-coral);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* ===== 底部操作栏 ===== */
+.cron-dialog-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 20px;
+    border-top: 2px solid var(--border-wood-light);
+    flex-shrink: 0;
+}
+
+.cron-dialog-footer-left {
+    display: flex;
+    gap: 8px;
+    margin-right: auto;
+}
+
+.cron-btn {
+    padding: 8px 18px;
+    border: 2px solid var(--border-wood-light);
+    border-radius: 10px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cron-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-wood);
+}
+
+.cron-btn:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.cron-btn-primary {
+    background: var(--border-wood);
+    color: var(--bg-primary);
+    border-color: var(--border-wood);
+}
+
+.cron-btn-primary:hover {
+    background: #7a5c12;
+}
+
+.cron-btn-danger {
+    color: var(--status-error);
+    border-color: var(--status-error);
+}
+
+.cron-btn-danger:hover {
+    background: rgba(214, 69, 69, 0.08);
+}
+
+.cron-btn-small {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+}
+
+/* ===== 运行日志列表 ===== */
+.cron-runs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cron-runs-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.cron-run-entry {
+    padding: 12px;
+    border: 2px solid var(--border-wood-light);
+    border-radius: 10px;
+    background: var(--bg-primary);
+    transition: all 0.2s ease;
+}
+
+.cron-run-entry:hover {
+    border-color: var(--border-wood);
+}
+
+.cron-run-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.cron-run-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.cron-run-summary {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.cron-run-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.cron-run-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.cron-run-error {
+    margin-top: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    background: rgba(214, 69, 69, 0.06);
+    font-size: 0.75rem;
+    color: var(--status-error);
+    line-height: 1.4;
+}
+
+.cron-run-session-link {
+    color: var(--status-info);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.cron-run-session-link:hover {
+    color: var(--border-wood);
+}
+
+/* ===== 运行日志过滤器 ===== */
+.cron-runs-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+    align-items: center;
+}
+
+.cron-runs-filter-group {
+    display: flex;
+    gap: 4px;
+}
+
+.cron-runs-filter-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border-wood-light);
+    border-radius: 6px;
+    background: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cron-runs-filter-btn:hover {
+    color: var(--text-primary);
+}
+
+.cron-runs-filter-btn.active {
+    background: var(--border-wood);
+    color: var(--bg-primary);
+    border-color: var(--border-wood);
+}
+
+/* ===== 加载更多 ===== */
+.cron-load-more {
+    text-align: center;
+    padding: 12px;
+}
+
+/* ===== 加载中 ===== */
+.cron-loading {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 768px) {
+    .cron-dialog {
+        width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+    }
+
+    .cron-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cron-span-2 {
+        grid-column: span 1;
+    }
+
+    .cron-dialog-tabs {
+        display: none;
+    }
+}

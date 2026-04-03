@@ -7,11 +7,16 @@ import { t } from '../i18n/index.js';
 export class SchedulePanel {
   /**
    * @param {HTMLElement} container - 挂载容器（workshop-view 元素）
+   * @param {Object} [callbacks]
+   * @param {function} [callbacks.onAdd] - 点击「+」新增按钮回调
+   * @param {function} [callbacks.onEdit] - 点击列表项回调，参数为 jobId
    */
-  constructor(container) {
+  constructor(container, callbacks = {}) {
     this._container = container;
     this._collapsed = false;
     this._schedules = [];
+    this._onAdd = callbacks.onAdd || null;
+    this._onEdit = callbacks.onEdit || null;
 
     this.el = document.createElement('aside');
     this.el.className = 'schedule-sidebar';
@@ -52,6 +57,7 @@ export class SchedulePanel {
     this.el.innerHTML = `
       <h3 class="schedule-sidebar-title">
         <span>${t('schedule.title')}</span>
+        <span class="schedule-add-btn" title="${t('schedule.add')}">＋</span>
         <span class="schedule-collapse-btn">▲</span>
       </h3>
       <div class="schedule-list"></div>
@@ -100,8 +106,37 @@ export class SchedulePanel {
   // ============================================================
 
   _bindEvents() {
-    const titleEl = this.el.querySelector('.schedule-sidebar-title');
-    titleEl?.addEventListener('click', () => this._toggleCollapse());
+    this.el.addEventListener('click', (e) => {
+      // 「+」按钮
+      const addBtn = e.target.closest('.schedule-add-btn');
+      if (addBtn) {
+        e.stopPropagation();
+        this._onAdd?.();
+        return;
+      }
+
+      // 折叠按钮
+      const collapseBtn = e.target.closest('.schedule-collapse-btn');
+      if (collapseBtn) {
+        e.stopPropagation();
+        this._toggleCollapse();
+        return;
+      }
+
+      // 标题栏（非按钮区域）也触发折叠
+      const titleEl = e.target.closest('.schedule-sidebar-title');
+      if (titleEl && !addBtn) {
+        this._toggleCollapse();
+        return;
+      }
+
+      // 列表项点击 → 编辑
+      const item = e.target.closest('.schedule-item');
+      if (item) {
+        const jobId = item.dataset.id;
+        if (jobId) this._onEdit?.(jobId);
+      }
+    });
   }
 
   _toggleCollapse() {

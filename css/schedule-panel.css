@@ -49,8 +49,36 @@
     user-select: none;
 }
 
-.schedule-collapse-btn {
+/* 新增按钮 */
+.schedule-add-btn {
     margin-left: auto;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--border-wood, #8B6914);
+    background: rgba(139, 105, 20, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+    user-select: none;
+}
+
+.schedule-add-btn:hover {
+    background: rgba(139, 105, 20, 0.18);
+    transform: scale(1.1);
+}
+
+.schedule-sidebar.collapsed .schedule-add-btn {
+    display: none;
+}
+
+.schedule-collapse-btn {
+    margin-left: 6px;
     font-size: 0.8rem;
     color: var(--text-muted);
     transition: transform 0.3s ease;
