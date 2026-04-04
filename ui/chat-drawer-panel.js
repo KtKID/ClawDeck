@@ -76,9 +76,9 @@ export class ChatDrawerPanel {
       targetKey = null; // sessionKey 无效（如误传了 agentId），清空
     }
     if (!targetKey && this._currentAgentId) {
-      // 按 updatedAt 降序找该 agent 最新的 session（排除 heartbeat）
+      // 按 updatedAt 降序找该 agent 最新的 session
       const agentSorted = this._allSessions
-        .filter(s => s.agentId === this._currentAgentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
+        .filter(s => s.agentId === this._currentAgentId)
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
       targetKey = agentSorted[0]?.sessionKey || null;
     }
@@ -335,11 +335,11 @@ export class ChatDrawerPanel {
     // 重新渲染下拉（只显示该 agent 的 session）
     this._renderDropdown();
 
-    // 如果当前有该 agent 的活跃 session，自动切换过去（排除 heartbeat）
+    // 如果当前有该 agent 的活跃 session，自动切换过去
     let targetKey = null;
     if (agentId) {
       const agentSessions = this._allSessions
-        .filter(s => s.agentId === agentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
+        .filter(s => s.agentId === agentId)
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
       targetKey = agentSessions[0]?.sessionKey || null;
     }
@@ -375,9 +375,8 @@ export class ChatDrawerPanel {
 
     const currentKey = this._currentSessionKey || '';
 
-    // 按 updatedAt 降序排列；过滤 heartbeat 内部 session；若有 agentId 上下文则只显示该 agent 的 session
+    // 按 updatedAt 降序排列；若有 agentId 上下文则只显示该 agent 的 session
     let sorted = [...this._allSessions]
-      .filter(s => !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
     if (this._currentAgentId) {
       sorted = sorted.filter(s => s.agentId === this._currentAgentId);
@@ -406,12 +405,10 @@ export class ChatDrawerPanel {
     const tabsEl = this.el.querySelector('.chat-tabs');
     if (!tabsEl) return;
 
-    // 若有当前 Agent，按 Agent 过滤；排除 heartbeat 内部 session
-    const source = this._sessions
-      .filter(s => !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''));
+    // 若有当前 Agent，按 Agent 过滤
     const filtered = this._currentAgentId
-      ? source.filter(s => s.agentId === this._currentAgentId)
-      : source;
+      ? this._sessions.filter(s => s.agentId === this._currentAgentId)
+      : this._sessions;
     const sorted = [...filtered]
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
       .slice(0, 5);
@@ -1063,7 +1060,7 @@ export class ChatDrawerPanel {
             const allSessions = this._dataSource.getAllSessionsForChat?.() || [];
             this.refreshDropdown(allSessions);
             const newest = allSessions
-              .filter(s => s.agentId === agentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
+              .filter(s => s.agentId === agentId)
               .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
             if (newest) {
               this._selectSession(newest.sessionKey);
