@@ -219,7 +219,7 @@ export class DataRouter extends EventEmitter {
         ]);
     }
     async refreshUsage() {
-        this._usage = await this._callWithLog('refreshUsage', 'sessions.usage', 'gateway', { limit: 50, days: 1 });
+        this._usage = await this._callWithLog('refreshUsage', 'sessions.usage', 'gateway', { limit: 50 });
     }
     async refreshCronJobs() {
         const res = await this._callWithLog('refreshCronJobs', 'cron.list', 'gateway', { limit: 50 });

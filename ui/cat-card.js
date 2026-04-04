@@ -23,6 +23,7 @@ export class CatCard {
    *   avatarUrl: string | null,
    *   traits: string[] | null,
    *   onSendCommand: ((message: string) => Promise<void>) | null,
+   *   onNewSessionClick: (() => void) | null,
    *   onChatClick: ((agentId: string) => void) | null
    * }} props
    */
@@ -109,9 +110,14 @@ export class CatCard {
           placeholder="${placeholder}"
           ${this._isSending ? 'disabled' : ''}
         >
-        <button ${this._isSending ? 'disabled' : ''}>
+        <button class="cat-cmd-send" ${this._isSending ? 'disabled' : ''}>
           ${this._isSending ? '...' : '➤'}
         </button>
+        ${props.onNewSessionClick ? `
+          <button class="cat-cmd-new" title="${t('cat.btn_new_session')}">
+            +
+          </button>
+        ` : ''}
       </div>
     `;
 
@@ -166,50 +172,43 @@ export class CatCard {
    * 绑定事件
    */
   _bindEvents() {
-    const input = this.el.querySelector('.cat-command input');
-    const button = this.el.querySelector('.cat-command button');
+    // 事件委托绑在 this.el 上（永不被 innerHTML 替换）
+    // 只绑一次，后续 _render 不需要重新绑定
+    if (this._eventsBound) return;
+    this._eventsBound = true;
 
-    if (!input || !button) return;
+    this.el.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
 
-    // 移除旧监听器（防止重复绑定）
-    if (this._handleSend) {
-      button.removeEventListener('click', this._handleSend);
-    }
-    if (this._handleKeypress) {
-      input.removeEventListener('keypress', this._handleKeypress);
-    }
-
-    // 创建新监听器并保存引用
-    this._handleSend = async () => {
-      const message = input.value.trim();
-      if (!message || this._isSending) return;
-
-      await this._sendCommand(message);
-    };
-
-    this._handleKeypress = (e) => {
-      if (e.key === 'Enter') {
-        this._handleSend();
+      if (btn.classList.contains('cat-cmd-send')) {
+        const input = this.el.querySelector('.cat-command input');
+        const message = input?.value?.trim();
+        if (!message || this._isSending) return;
+        this._sendCommand(message);
+      } else if (btn.classList.contains('cat-cmd-new')) {
+        e.stopPropagation(); // 阻止冒泡到 document，避免 outside-click 立即关闭抽屉
+        if (this._props.onNewSessionClick) {
+          this._props.onNewSessionClick();
+        }
       }
-    };
+    });
 
-    // 绑定监听器
-    button.addEventListener('click', this._handleSend);
-    input.addEventListener('keypress', this._handleKeypress);
-
-    // 绑定聊天气泡按钮
-    const chatBubble = this.el.querySelector('.cat-chat-bubble');
-    if (chatBubble && this._props.onChatClick) {
-      if (this._handleChatBubble) {
-        chatBubble.removeEventListener('click', this._handleChatBubble, true);
+    this.el.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.matches('.cat-command input')) {
+        const message = e.target.value?.trim();
+        if (!message || this._isSending) return;
+        this._sendCommand(message);
       }
-      this._handleChatBubble = (e) => {
+    });
+
+    // 聊天气泡也通过委托处理
+    this.el.addEventListener('click', (e) => {
+      if (e.target.closest('.cat-chat-bubble') && this._props.onChatClick) {
         e.stopPropagation();
-        // 传递 sessionKey 而不是 id，因为需要用 sessionKey 打开对话
         this._props.onChatClick(this._props.sessionKey || this._props.id);
-      };
-      chatBubble.addEventListener('click', this._handleChatBubble, true);
-    }
+      }
+    }, true);
   }
 
   /**
@@ -280,25 +279,7 @@ export class CatCard {
   destroy() {
     // 清理事件监听器
     const input = this.el.querySelector('.cat-command input');
-    const button = this.el.querySelector('.cat-command button');
-    const chatBubble = this.el.querySelector('.cat-chat-bubble');
-    const avatarImg = this.el.querySelector('.cat-avatar-img');
-    if (button && this._handleSend) {
-      button.removeEventListener('click', this._handleSend);
-    }
-    if (input && this._handleKeypress) {
-      input.removeEventListener('keypress', this._handleKeypress);
-    }
-    if (chatBubble && this._handleChatBubble) {
-      chatBubble.removeEventListener('click', this._handleChatBubble, true);
-    }
-    if (avatarImg && this._handleAvatarError) {
-      avatarImg.removeEventListener('error', this._handleAvatarError);
-    }
-    this._handleSend = null;
-    this._handleKeypress = null;
-    this._handleChatBubble = null;
-    this._handleAvatarError = null;
+    // 事件监听器绑在 this.el 上，remove 时自动 GC
 
     // 移除 DOM
     this.el.remove();

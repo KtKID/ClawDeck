@@ -69,6 +69,7 @@ export default {
   'card.steps_title': '📊 执行步骤',
   'card.supplement_placeholder': '补充说明...',
   'card.send': '发送',
+  'card.cron_session_hint': '定时任务会话，请在下方猫咪卡片创建新会话',
 
   // ── Agent 状态 ────────────────────────────────────────
   'status.idle': '空闲中',
@@ -369,7 +370,11 @@ export default {
 
   // ── 猫咪卡片 ──────────────────────────────────────────
   'cat.btn_chat': '打开对话',
+  'cat.btn_new_session': '创建新会话',
 
   // ── 聊天抽屉补充 ────────────────────────────────────────
   'chat.unknown_error': '未知错误',
+  'chat.new_session_label': '✨ 新会话',
+  'chat.new_session_hint': '输入消息并发送，将为此 Agent 创建新会话',
+  'chat.send_failed': '发送失败: {{error}}',
 };

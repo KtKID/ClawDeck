@@ -1,6 +1,6 @@
 {
   "name": "clawdeck-dev",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,7 +19,8 @@
     "dev:mock:stress": "node dev-server.cjs --mock=stress",
     "dev:local": "node dev-server.cjs --mock --mock-log-seed=logs/刷新问题clawdeck-2026-03-13T05-40-36.log",
     "plan:status": "node scripts/print-autotest-status.mjs",
-    "build:bridge": "tsc -p bridge/src/tsconfig.json"
+    "ver:sync": "node scripts/sync-version.mjs",
+    "build:bridge": "node scripts/sync-version.mjs && tsc -p bridge/src/tsconfig.json"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

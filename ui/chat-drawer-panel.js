@@ -15,6 +15,8 @@ export class ChatDrawerPanel {
     this._visible = false;
     this._currentSessionKey = null;
     this._currentAgentId = null;    // 当前上下文 agent（用于下拉过滤）
+    this._newSessionMode = false;   // "新会话"模式：发送时走 startAgentChat
+    this._newSessionAgentId = null; // 新会话模式绑定的 agentId
     this._sessions = []; // 活跃 session 列表（用于 tabs，最近 2 分钟）
     this._allSessions = []; // 全量 session 列表（用于下拉选择器）
 
@@ -74,18 +76,87 @@ export class ChatDrawerPanel {
       targetKey = null; // sessionKey 无效（如误传了 agentId），清空
     }
     if (!targetKey && this._currentAgentId) {
-      // 按 updatedAt 降序找该 agent 最新的 session
+      // 按 updatedAt 降序找该 agent 最新的 session（排除 heartbeat）
       const agentSorted = this._allSessions
-        .filter(s => s.agentId === this._currentAgentId)
+        .filter(s => s.agentId === this._currentAgentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
       targetKey = agentSorted[0]?.sessionKey || null;
     }
 
     if (targetKey && targetKey !== this._currentSessionKey) {
       this._selectSession(targetKey);
+    } else if (!targetKey && this._currentAgentId) {
+      // 该 agent 无任何 session → 显示空态（不跨 agent 回退）
+      this._currentSessionKey = null;
+      this._renderTabs();
+      this._updateHeaderStatus();
+      const messagesEl = this.el.querySelector('.chat-messages');
+      if (messagesEl) {
+        messagesEl.innerHTML = `
+          <div class="chat-empty">
+            <div class="chat-empty-icon">${t('chat.no_sessions_icon')}</div>
+            <div class="chat-empty-text">${t('chat.agent_no_sessions')}</div>
+          </div>
+        `;
+      }
     } else if (!this._currentSessionKey && this._sessions.length > 0) {
+      // 无 agent 上下文时才回退到第一个活跃 session
       this._selectSession(this._sessions[0].sessionKey);
     }
+  }
+
+  /** 以"新会话"模式打开抽屉：不选已有 session，发送时创建新 session */
+  async showNewSession(agentId) {
+    try {
+      this._newSessionMode = true;
+      this._newSessionAgentId = agentId;
+      this._currentSessionKey = null;
+      this._currentAgentId = agentId;
+
+      this._visible = true;
+      this.el.classList.add('open');
+      this._backdrop.classList.add('visible');
+
+      // 清空消息区，显示新会话提示
+      const messagesEl = this.el.querySelector('.chat-messages');
+      if (messagesEl) {
+        messagesEl.innerHTML = `<div class="chat-empty">${t('chat.new_session_hint')}</div>`;
+      }
+
+      // 下拉显示"新会话"
+      const selectEl = this.el.querySelector('.chat-session-select');
+      if (selectEl) {
+        selectEl.innerHTML = `<option value="" selected>${t('chat.new_session_label')}</option>`;
+        selectEl.disabled = true;
+      }
+
+      // 更新标题（选择器与 _updateHeaderStatus 保持一致）
+      const agentLabel = this._findAgentLabel(agentId);
+      const titleEl = this.el.querySelector('.chat-title-text');
+      if (titleEl) {
+        titleEl.textContent = `✨ ${agentLabel} — ${t('chat.new_session_label')}`;
+      }
+    } catch (err) {
+      console.error('[ChatDrawer] showNewSession error:', err);
+      // 确保即使出错也打开窗口
+      this._visible = true;
+      this.el.classList.add('open');
+      this._backdrop.classList.add('visible');
+    }
+  }
+
+  /** 查找 agent 显示名 */
+  _findAgentLabel(agentId) {
+    const session = this._allSessions.find(s => s.agentId === agentId);
+    return session?.agentLabel || agentId || '?';
+  }
+
+  /** 退出新会话模式 */
+  _exitNewSessionMode() {
+    this._newSessionMode = false;
+    this._newSessionAgentId = null;
+    const selectEl = this.el.querySelector('.chat-session-select');
+    if (selectEl) selectEl.disabled = false;
   }
 
   /** 关闭抽屉 */
@@ -93,6 +164,7 @@ export class ChatDrawerPanel {
     this._visible = false;
     this.el.classList.remove('open');
     this._backdrop.classList.remove('visible');
+    this._exitNewSessionMode();
   }
 
   /** 切换开/关（不同 agent 时直接切换，同 agent 时关闭） */
@@ -109,15 +181,20 @@ export class ChatDrawerPanel {
   /** 刷新全量 session 下拉选择器（由 WorkshopPanel 在 data:updated 后调用） */
   refreshDropdown(allSessions) {
     this._allSessions = allSessions || [];
-    this._renderDropdown();
+    // 新会话模式 或 等待新 session 创建期间，只更新数据不重绘 UI
+    if (!this._newSessionMode) {
+      this._renderDropdown();
+    }
     this.refreshSidebar();
   }
 
   /** 刷新 session 标签页列表（由 WorkshopPanel 在 data:updated 后调用） */
   refreshTabs(sessions) {
     this._sessions = sessions || [];
-    this._renderTabs();
-    this._updateHeaderStatus();
+    if (!this._newSessionMode) {
+      this._renderTabs();
+      this._updateHeaderStatus();
+    }
   }
 
   /** 销毁组件，清理资源 */
@@ -258,11 +335,11 @@ export class ChatDrawerPanel {
     // 重新渲染下拉（只显示该 agent 的 session）
     this._renderDropdown();
 
-    // 如果当前有该 agent 的活跃 session，自动切换过去
+    // 如果当前有该 agent 的活跃 session，自动切换过去（排除 heartbeat）
     let targetKey = null;
     if (agentId) {
       const agentSessions = this._allSessions
-        .filter(s => s.agentId === agentId)
+        .filter(s => s.agentId === agentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
       targetKey = agentSessions[0]?.sessionKey || null;
     }
@@ -298,8 +375,10 @@ export class ChatDrawerPanel {
 
     const currentKey = this._currentSessionKey || '';
 
-    // 按 updatedAt 降序排列；若有 agentId 上下文则只显示该 agent 的 session
-    let sorted = [...this._allSessions].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    // 按 updatedAt 降序排列；过滤 heartbeat 内部 session；若有 agentId 上下文则只显示该 agent 的 session
+    let sorted = [...this._allSessions]
+      .filter(s => !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
     if (this._currentAgentId) {
       sorted = sorted.filter(s => s.agentId === this._currentAgentId);
     }
@@ -327,11 +406,13 @@ export class ChatDrawerPanel {
     const tabsEl = this.el.querySelector('.chat-tabs');
     if (!tabsEl) return;
 
-    // 若有当前 Agent，按 Agent 过滤；否则显示全部活跃 session
-    const source = this._currentAgentId
-      ? this._sessions.filter(s => s.agentId === this._currentAgentId)
-      : this._sessions;
-    const sorted = [...source]
+    // 若有当前 Agent，按 Agent 过滤；排除 heartbeat 内部 session
+    const source = this._sessions
+      .filter(s => !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''));
+    const filtered = this._currentAgentId
+      ? source.filter(s => s.agentId === this._currentAgentId)
+      : source;
+    const sorted = [...filtered]
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
       .slice(0, 5);
     const activeKey = this._currentSessionKey || '';
@@ -958,9 +1039,51 @@ export class ChatDrawerPanel {
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
+
+    // 新会话模式：调用 startAgentChat 创建新 session
+    if (this._newSessionMode && this._newSessionAgentId) {
+      const agentId = this._newSessionAgentId; // 先保存，_exitNewSessionMode 会清空
+      input.value = '';
+      this._appendStep({
+        id: `user-${Date.now()}`,
+        type: 'llm_input',
+        summary: text,
+        timestamp: Date.now(),
+      });
+
+      if (this._gateway) {
+        try {
+          await this._gateway.startAgentChat(agentId, text);
+          // 保持 _newSessionMode=true 防止外部 refresh 覆盖 UI，延迟后再退出
+          await new Promise(r => setTimeout(r, 2000));
+          this._exitNewSessionMode();
+          // 刷新 session 列表，尝试找到新 session
+          if (this._dataSource) {
+            await this._dataSource.refreshSessions().catch(() => {});
+            const allSessions = this._dataSource.getAllSessionsForChat?.() || [];
+            this.refreshDropdown(allSessions);
+            const newest = allSessions
+              .filter(s => s.agentId === agentId && !/heartbeat/i.test(s.title || '') && !/heartbeat/i.test(s.sessionKey || ''))
+              .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
+            if (newest) {
+              this._selectSession(newest.sessionKey);
+            }
+          }
+        } catch (err) {
+          this._appendStep({
+            id: `err-${Date.now()}`,
+            type: 'error',
+            summary: t('chat.send_failed', { error: err.message || t('chat.unknown_error') }),
+            timestamp: Date.now(),
+          });
+        }
+      }
+      return;
+    }
+
+    // 普通模式：发送到已有 session
     if (!this._currentSessionKey) return;
 
-    // 立即清空输入框并追加用户消息气泡
     input.value = '';
     this._appendStep({
       id: `user-${Date.now()}`,
@@ -969,7 +1092,6 @@ export class ChatDrawerPanel {
       timestamp: Date.now(),
     });
 
-    // 调用真实 API
     if (this._gateway) {
       try {
         await this._gateway.sendInstruction(this._currentSessionKey, text);

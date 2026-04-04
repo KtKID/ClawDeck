@@ -69,6 +69,7 @@ export default {
   'card.steps_title': '📊 Steps',
   'card.supplement_placeholder': 'Add a note...',
   'card.send': 'Send',
+  'card.cron_session_hint': 'Cron session — create a new session from agent card below',
 
   // ── Agent Status ──────────────────────────────────────
   'status.idle': 'Idle',
@@ -358,7 +359,11 @@ export default {
 
   // ── Cat Card ────────────────────────────────────────────
   'cat.btn_chat': 'Open Chat',
+  'cat.btn_new_session': 'New Session',
 
   // ── Chat Drawer ─────────────────────────────────────────
   'chat.unknown_error': 'Unknown error',
+  'chat.new_session_label': '✨ New Session',
+  'chat.new_session_hint': 'Type a message and send to create a new session for this Agent',
+  'chat.send_failed': 'Send failed: {{error}}',
 };

@@ -175,6 +175,14 @@ body.workshop-view::before {
     color: var(--accent-coral);
 }
 
+.workshop-version {
+    font-size: 0.7rem;
+    color: var(--text-secondary, #999);
+    opacity: 0.6;
+    align-self: flex-end;
+    margin-bottom: 2px;
+}
+
 /* 营业状态挂板 */
 .workshop-status-sign {
     display: flex;
@@ -941,6 +949,13 @@ body.workshop-view::before {
 .workshop-supplement-input .btn-abort:hover {
     background: var(--status-error);
     color: white;
+}
+
+.workshop-cron-hint {
+    font-size: 0.7rem;
+    color: var(--text-secondary, #999);
+    font-style: italic;
+    padding: 4px 0;
 }
 
 /* ============================================

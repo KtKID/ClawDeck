@@ -95,6 +95,13 @@ export class CatStationPanel {
       const card = new CatCard(this.el.querySelector('.cat-station-scroll'), {
         ...agent,
         onSendCommand: (message) => this._sendCommand(agent.id, message),
+        onNewSessionClick: () => {
+          if (this.chatDrawerPanel) {
+            this.chatDrawerPanel.showNewSession(agent.id).catch(err => {
+              console.error('[CatStation] showNewSession failed:', err);
+            });
+          }
+        },
         onChatClick: (sessionKey) => {
           // sessionKey 可能为 null（无活跃 session），由 ChatDrawerPanel 自动选择该 agent 最新 session
           console.log('[CatStation] chat click:', sessionKey, 'agentId:', agent.id);
@@ -121,16 +128,21 @@ export class CatStationPanel {
    */
   async _sendCommand(agentId, message) {
     try {
-      // 从 DataRouter 获取该 Agent 的活跃 Session
+      // 从 DataRouter 获取该 Agent 的活跃用户 Session
+      // 排除 cron（cron: 前缀）和 heartbeat（title 含 heartbeat）
       const activeSessions = this.dataRouter.getSessionsForWorkshop();
-      const agentSession = activeSessions.find(s => s.agentId === agentId);
+      const agentSession = activeSessions.find(s =>
+        s.agentId === agentId &&
+        !s.sessionKey?.startsWith('cron:') &&
+        !/heartbeat/i.test(s.title || '')
+      );
 
       if (agentSession) {
-        // 有活跃 Session，使用 chat.send 发送指令
+        // 有活跃 chat Session，使用 chat.send 发送指令
         await this.gateway.sendInstruction(agentSession.sessionKey, message);
         console.log(`CatStationPanel: Command sent to agent ${agentId} (session):`, message);
       } else {
-        // 没有活跃 Session（idle 状态），通过 agent RPC 创建新会话并发送消息
+        // 没有活跃 chat Session，通过 agent RPC 创建新会话并发送消息
         await this.gateway.startAgentChat(agentId, message);
         console.log(`CatStationPanel: Command sent to agent ${agentId} (new session):`, message);
       }

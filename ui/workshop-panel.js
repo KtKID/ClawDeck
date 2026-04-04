@@ -8,6 +8,7 @@ import { refreshTracker } from './refresh-tracker.js';
 import { SchedulePanel } from './schedule-panel.js';
 import { CronDialog } from './cron-dialog.js';
 import { ChatDrawerPanel } from './chat-drawer-panel.js';
+import { VERSION } from './version.js';
 import { t, toggleLocale, onLocaleChange, getLocale } from '../i18n/index.js';
 
 export class WorkshopPanel {
@@ -154,6 +155,7 @@ export class WorkshopPanel {
             <div class="workshop-logo">
               <div class="workshop-logo-icon">🐾</div>
               <div class="workshop-logo-text">Claw<span>Deck</span></div>
+              <div class="workshop-version">v${VERSION}</div>
             </div>
             <div class="workshop-status-sign">
               <span class="workshop-status-dot"></span>
@@ -789,10 +791,14 @@ export class WorkshopPanel {
           <button class="workshop-action-btn retry" data-action="retry" data-session="${session.sessionKey}">${t('action.retry')}</button>
         </div>
         ` : ''}
-        <div class="workshop-supplement-input" data-session="${session?.sessionKey || ''}">
-          <input type="text" placeholder="${t('card.supplement_placeholder')}" ${!session ? 'disabled' : ''} />
-          <button class="btn-send">${t('card.send')}</button>
-          ${this._canAbort(session) ? `<button class="btn-abort" data-session="${session.sessionKey}" title="Abort">⏹</button>` : ''}
+        <div class="workshop-supplement-input" data-session="${session?.sessionKey || ''}" data-agent-id="${agent.id}">
+          ${(session?.sessionKey?.startsWith('cron:') || /heartbeat/i.test(session?.title || '')) ? `
+            <span class="workshop-cron-hint">${t('card.cron_session_hint')}</span>
+          ` : `
+            <input type="text" placeholder="${t('card.supplement_placeholder')}" ${!session ? 'disabled' : ''} />
+            <button class="btn-send">${t('card.send')}</button>
+            ${this._canAbort(session) ? `<button class="btn-abort" data-session="${session.sessionKey}" title="Abort">⏹</button>` : ''}
+          `}
         </div>
       </div>
     `;
