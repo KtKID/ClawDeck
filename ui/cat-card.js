@@ -143,7 +143,7 @@ export class CatCard {
       if (!avatar) return;
       avatar.classList.remove("has-image");
       avatar.classList.add("avatar-missing");
-      avatar.title = "Avatar load failed";
+      avatar.title = t('cat.avatar_failed');
       avatar.innerHTML = this._escapeHtml(this._props.icon);
     };
     avatarImg.addEventListener("error", this._handleAvatarError, { once: true });

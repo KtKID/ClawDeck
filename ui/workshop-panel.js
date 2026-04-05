@@ -168,7 +168,7 @@ export class WorkshopPanel {
             </button>
           </div>
           <div class="workshop-header-right">
-            <button class="workshop-nav-btn" id="btn-lang" title="Switch Language">🌐 ${t('lang.switch_to')}</button>
+            <button class="workshop-nav-btn" id="btn-lang" title="${t('workshop.btn_lang_title')}">🌐 ${t('lang.switch_to')}</button>
             <button class="workshop-nav-btn" id="btn-chat" title="${t('nav.chat')}">💬 ${t('nav.chat')}</button>
           </div>
         </header>
@@ -422,10 +422,10 @@ export class WorkshopPanel {
         </div>
         ${errorHint}
         <div class="gw-row">
-          <input class="gw-input gw-url" type="text" value="${draftUrl}" placeholder="ws://127.0.0.1:16968" />
+          <input class="gw-input gw-url" type="text" value="${draftUrl}" placeholder="${t('workshop.placeholder_url')}" />
         </div>
         <div class="gw-row">
-          <input class="gw-input gw-token ${isAuthFailed ? 'gw-input-error' : ''}" type="password" value="${draftToken}" placeholder="Token" />
+          <input class="gw-input gw-token ${isAuthFailed ? 'gw-input-error' : ''}" type="password" value="${draftToken}" placeholder="${t('workshop.placeholder_token')}" />
           <button class="gw-btn connect">${isBusy ? t('gateway.btn_reconnect') : t('gateway.btn_connect')}</button>
           <button class="gw-btn disconnect" ${disconnectDisabled ? 'disabled' : ''}>${isConnected ? t('gateway.btn_disconnect') : t('gateway.btn_stop')}</button>
         </div>
@@ -751,7 +751,7 @@ export class WorkshopPanel {
       <div class="workshop-order-card" data-agent-id="${agent.id}">
         <div class="workshop-order-illustration">
           <span class="workshop-order-img">${agent.icon}</span>
-          ${agent.status === 'working' ? '<span class="workshop-order-badge">Working</span>' : ''}
+          ${agent.status === 'working' ? `<span class="workshop-order-badge">${t('workshop.badge_working')}</span>` : ''}
         </div>
         <div class="workshop-order-header">
           <div>
@@ -797,7 +797,7 @@ export class WorkshopPanel {
           ` : `
             <input type="text" placeholder="${t('card.supplement_placeholder')}" ${!session ? 'disabled' : ''} />
             <button class="btn-send">${t('card.send')}</button>
-            ${this._canAbort(session) ? `<button class="btn-abort" data-session="${session.sessionKey}" title="Abort">⏹</button>` : ''}
+            ${this._canAbort(session) ? `<button class="btn-abort" data-session="${session.sessionKey}" title="${t('workshop.btn_abort')}">⏹</button>` : ''}
           `}
         </div>
       </div>

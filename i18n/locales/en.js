@@ -361,6 +361,65 @@ export default {
   'cat.btn_chat': 'Open Chat',
   'cat.btn_new_session': 'New Session',
 
+  // ── Cost Panel ──────────────────────────────────────────
+  'cost.loading': 'Loading data...',
+  'cost.token': 'Token',
+  'cost.active_sessions': 'Active Sessions',
+  'cost.online_agents': 'Online Agents',
+  'cost.completed': 'Completed',
+  'cost.needs_help': 'Needs Help',
+
+  // ── Score Bar ─────────────────────────────────────────────
+  'score.agents': 'Agents',
+  'score.active_tasks': 'Active Tasks',
+  'score.completed': 'Completed',
+  'score.score': 'Score',
+
+  // ── Session Timeline ──────────────────────────────────────
+  'session_tl.title': 'Session Timeline',
+  'session_tl.empty': 'No steps',
+  'session_tl.count': '{{count}} steps',
+
+  // ── Detail Panel ──────────────────────────────────────────
+  'detail.tab_overview': 'Overview',
+  'detail.tab_metrics': 'Metrics',
+  'detail.no_telemetry': 'No telemetry data available',
+  'detail.no_session': 'No active session',
+  'detail.token_usage': 'Token Usage',
+  'detail.input': 'Input',
+  'detail.output': 'Output',
+  'detail.cache_read': 'Cache Read',
+  'detail.cache_write': 'Cache Write',
+  'detail.tool_calls': 'Tool Calls',
+  'detail.tool_running': 'running',
+  'detail.no_tool_calls': 'No tool calls yet',
+  'detail.errors': 'Errors ({{count}})',
+  'detail.session_duration': 'Session Duration',
+  'detail.field_type': 'Type',
+  'detail.field_state': 'State',
+
+  // ── Workshop Panel ────────────────────────────────────────
+  'workshop.badge_working': 'Working',
+  'workshop.btn_abort': 'Abort',
+  'workshop.placeholder_url': 'ws://127.0.0.1:16968',
+  'workshop.placeholder_token': 'Token',
+  'workshop.btn_lang_title': 'Switch Language',
+
+  // ── Cat Card ──────────────────────────────────────────────
+  'cat.avatar_failed': 'Avatar load failed',
+
+  // ── Data Router ───────────────────────────────────────────
+  'data.pending': 'Pending',
+  'data.unknown_error': 'Unknown error',
+  'data.unknown_agent': 'Unknown',
+  'data.model_failed': 'Model request failed',
+  'data.task_completed': 'Task completed',
+  'data.kind.cron': 'Scheduled Task',
+  'data.kind.hook': 'Webhook',
+  'data.kind.node': 'Node Task',
+  'data.kind.global': 'Global',
+  'data.kind.other': 'Other',
+
   // ── Chat Drawer ─────────────────────────────────────────
   'chat.unknown_error': 'Unknown error',
   'chat.new_session_label': '✨ New Session',

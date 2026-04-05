@@ -1,6 +1,8 @@
 // ui/session-timeline.js — 会话步骤时间线面板
 // 展示选中 session 的 StepState 列表（LLM / Tool / Error 分类）
 
+import { t } from '../i18n/index.js';
+
 export class SessionTimeline {
   constructor(container) {
     this.el = document.createElement('div');
@@ -54,10 +56,10 @@ export class SessionTimeline {
     if (!this._steps.length) {
       this.el.innerHTML = `
         <div class="timeline-header">
-          <span class="timeline-title">会话时间线</span>
+          <span class="timeline-title">${t('session_tl.title')}</span>
           <button class="timeline-close">&times;</button>
         </div>
-        <div class="timeline-empty">暂无步骤</div>
+        <div class="timeline-empty">${t('session_tl.empty')}</div>
       `;
       this._bindClose();
       return;
@@ -65,8 +67,8 @@ export class SessionTimeline {
 
     let html = `
       <div class="timeline-header">
-        <span class="timeline-title">会话时间线</span>
-        <span class="timeline-count">${this._steps.length} 步</span>
+        <span class="timeline-title">${t('session_tl.title')}</span>
+        <span class="timeline-count">${t('session_tl.count', { count: this._steps.length })}</span>
         <button class="timeline-close">&times;</button>
       </div>
       <div class="timeline-list">

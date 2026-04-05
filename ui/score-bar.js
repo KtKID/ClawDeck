@@ -1,4 +1,5 @@
 // ui/score-bar.js — Top score/status bar
+import { t } from '../i18n/index.js';
 
 export class ScoreBar {
   constructor(container) {
@@ -24,19 +25,19 @@ export class ScoreBar {
   _render() {
     this.el.innerHTML = `
       <div class="score-item">
-        <span class="score-label">Agents</span>
+        <span class="score-label">${t('score.agents')}</span>
         <span class="score-value">${this.scores.agents}</span>
       </div>
       <div class="score-item">
-        <span class="score-label">Active Tasks</span>
+        <span class="score-label">${t('score.active_tasks')}</span>
         <span class="score-value">${this.scores.tasks}</span>
       </div>
       <div class="score-item">
-        <span class="score-label">Completed</span>
+        <span class="score-label">${t('score.completed')}</span>
         <span class="score-value">${this.scores.completed}</span>
       </div>
       <div class="score-item">
-        <span class="score-label">Score</span>
+        <span class="score-label">${t('score.score')}</span>
         <span class="score-value">${this.scores.score}</span>
       </div>
     `;

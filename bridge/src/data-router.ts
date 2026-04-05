@@ -1,6 +1,8 @@
 import { EventEmitter, GatewayClient, GW_STATUS } from './gateway-client.js';
 import type { GwStatus, ChatPushPayload, SessionRunState, AgentEventPayload } from './types.js';
 import { resolveToolDisplay } from './tool-display.js';
+// i18n: t() 函数通过 setTranslator 注入（避免跨目录 import 路径问题）
+let t: (key: string, params?: Record<string, any>) => string = (key) => key;
 
 // ============================================================
 // DataRouter — 前端数据路由器
@@ -31,6 +33,9 @@ interface AIAdvice {
 }
 
 export class DataRouter extends EventEmitter {
+  /** 注入 i18n 翻译函数（由 index.html 初始化时调用） */
+  static setTranslator(fn: typeof t): void { t = fn; }
+
   private _gateway: GatewayClient;
   private _agents: any[] = [];
   private _activeSessions: any[] = [];
@@ -380,7 +385,7 @@ export class DataRouter extends EventEmitter {
   private _formatNextRun(ms?: number): string {
     if (!ms) return '--';
     const now = Date.now();
-    if (ms < now) return '待执行';
+    if (ms < now) return t('data.pending');
     const d = new Date(ms);
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
@@ -647,7 +652,7 @@ export class DataRouter extends EventEmitter {
     } else if (state === 'error') {
       this._emit('push:chat', {
         sessionKey,
-        step: { id: `push-err-${Date.now()}`, type: 'error', summary: payload.errorMessage || '未知错误', timestamp: Date.now(), data: payload },
+        step: { id: `push-err-${Date.now()}`, type: 'error', summary: payload.errorMessage || t('data.unknown_error'), timestamp: Date.now(), data: payload },
       });
     }
   }
@@ -820,12 +825,8 @@ export class DataRouter extends EventEmitter {
     });
   }
 
-  private static readonly _KIND_META: Record<string, { label: string; icon: string }> = {
-    cron: { label: '定时任务', icon: '⏰' },
-    hook: { label: 'Webhook', icon: '🔗' },
-    node: { label: 'Node 任务', icon: '⚙️' },
-    global: { label: '全局', icon: '🌐' },
-    other: { label: '其他', icon: '❓' },
+  private static readonly _KIND_ICONS: Record<string, string> = {
+    cron: '⏰', hook: '🔗', node: '⚙️', global: '🌐', other: '❓',
   };
 
   /**
@@ -844,15 +845,16 @@ export class DataRouter extends EventEmitter {
     return source.map(s => {
       const { agentId, sessionKind } = this._parseSessionKey(s.key);
       const agent = agentId ? this._agents.find((a: any) => a.id === agentId) : null;
-      const meta = DataRouter._KIND_META[sessionKind];
+      const kindLabel = sessionKind !== 'direct' && sessionKind !== 'group' ? t(`data.kind.${sessionKind}`) : null;
+      const kindIcon = DataRouter._KIND_ICONS[sessionKind];
 
       return {
         sessionKey: s.key,
         kind: sessionKind,
         title: s.label || s.displayName || `Session ${s.key.slice(0, 16)}`,
         agentId,
-        agentLabel: agent?.identity?.name || agent?.name || meta?.label || agentId || '未知',
-        agentIcon: agent?.identity?.emoji || meta?.icon || '🤖',
+        agentLabel: agent?.identity?.name || agent?.name || kindLabel || agentId || t('data.unknown_agent'),
+        agentIcon: agent?.identity?.emoji || kindIcon || '🤖',
         updatedAt: s.updatedAt,
         abortedLastRun: !!s.abortedLastRun,
       };
@@ -957,7 +959,7 @@ export class DataRouter extends EventEmitter {
               step.isError = true;
               step.summary = msg.message.errorMessage
                 ? this._truncate(msg.message.errorMessage, 200)
-                : '模型请求失败';
+                : t('data.model_failed');
             } else if (Array.isArray(msgContent) && msgContent.length > 0
               && msgContent.every((c: any) => c.type === 'toolCall' || c.type === 'tool_use')) {
               // B4: content 全部是 toolCall → 渲染为 tool_call
@@ -1196,7 +1198,7 @@ export class DataRouter extends EventEmitter {
     if (!adviceId) return;
     console.log(`[AIAdvice] Session 完成，自动回填建议: ${adviceId} (session: ${sessionKey})`);
     // 提取最后一条消息作为结果摘要
-    let resultSummary = '任务已完成';
+    let resultSummary = t('data.task_completed');
     if (lastMessage) {
       const text = this._extractTextContent(lastMessage);
       if (text) resultSummary = text.slice(0, 200);

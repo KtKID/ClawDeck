@@ -1,4 +1,5 @@
 // ui/workshop-log-panel.js — 工坊日志面板组件
+import { t } from '../i18n/index.js';
 
 const MAX_ENTRIES = 200;
 
@@ -33,10 +34,10 @@ export class WorkshopLogPanel {
     this._header = document.createElement('div');
     this._header.className = 'workshop-log-panel-header';
     this._header.innerHTML = `
-      <span class="workshop-log-panel-title">📋 工坊日志</span>
+      <span class="workshop-log-panel-title">📋 ${t('log.title')}</span>
       <span class="workshop-log-panel-count">0</span>
-      <button class="workshop-log-panel-source" title="切换本地/服务端日志">本地</button>
-      <button class="workshop-log-panel-toggle" title="折叠/展开">&#9660;</button>
+      <button class="workshop-log-panel-source" title="${t('log.tooltip_source')}">${t('log.source_local')}</button>
+      <button class="workshop-log-panel-toggle" title="${t('log.tooltip_toggle')}">&#9660;</button>
     `;
     this._header.querySelector('.workshop-log-panel-toggle').addEventListener('click', () => this.toggle());
     this._header.querySelector('.workshop-log-panel-source').addEventListener('click', () => this.setServerMode(!this._serverMode));
@@ -104,7 +105,7 @@ export class WorkshopLogPanel {
   setServerMode(enabled) {
     this._serverMode = enabled;
     const btn = this._header.querySelector('.workshop-log-panel-source');
-    if (btn) btn.textContent = enabled ? '服务端' : '本地';
+    if (btn) btn.textContent = enabled ? t('log.source_server') : t('log.source_local');
   }
 
   appendServerLogs(lines) {

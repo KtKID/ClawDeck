@@ -1,5 +1,6 @@
 import { EventEmitter, GatewayClient } from './gateway-client.js';
 import type { SessionRunState } from './types.js';
+declare let t: (key: string, params?: Record<string, any>) => string;
 interface RouteEntry {
     caller: string;
     method: string;
@@ -22,6 +23,8 @@ interface AIAdvice {
     statusUpdatedAt?: string;
 }
 export declare class DataRouter extends EventEmitter {
+    /** 注入 i18n 翻译函数（由 index.html 初始化时调用） */
+    static setTranslator(fn: typeof t): void;
     private _gateway;
     private _agents;
     private _activeSessions;
@@ -147,7 +150,7 @@ export declare class DataRouter extends EventEmitter {
     } | null;
     getAgentsForWorkshop(): any[];
     getSessionsForWorkshop(): any[];
-    private static readonly _KIND_META;
+    private static readonly _KIND_ICONS;
     /**
      * 返回用于聊天抽屉下拉选择器的全量 session 列表，包含 agent 名字和图标。
      * 与 getSessionsForWorkshop 的区别：不限制 2 分钟活跃窗口，包含所有 session 类型。

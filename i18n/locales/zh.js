@@ -372,6 +372,65 @@ export default {
   'cat.btn_chat': '打开对话',
   'cat.btn_new_session': '创建新会话',
 
+  // ── 成本面板 (cost-panel) ────────────────────────────────
+  'cost.loading': '等待数据...',
+  'cost.token': 'Token',
+  'cost.active_sessions': '活跃会话',
+  'cost.online_agents': '在线伙伴',
+  'cost.completed': '已完成',
+  'cost.needs_help': '需要帮助',
+
+  // ── 评分条 (score-bar) ────────────────────────────────────
+  'score.agents': 'Agents',
+  'score.active_tasks': '活跃任务',
+  'score.completed': '已完成',
+  'score.score': '评分',
+
+  // ── 会话时间线 (session-timeline) ──────────────────────────
+  'session_tl.title': '会话时间线',
+  'session_tl.empty': '暂无步骤',
+  'session_tl.count': '{{count}} 步',
+
+  // ── 详情面板 (detail-panel) ─────────────────────────────────
+  'detail.tab_overview': '概览',
+  'detail.tab_metrics': '指标',
+  'detail.no_telemetry': '暂无遥测数据',
+  'detail.no_session': '无活跃会话',
+  'detail.token_usage': 'Token 用量',
+  'detail.input': '输入',
+  'detail.output': '输出',
+  'detail.cache_read': '缓存读取',
+  'detail.cache_write': '缓存写入',
+  'detail.tool_calls': '工具调用',
+  'detail.tool_running': '运行中',
+  'detail.no_tool_calls': '暂无工具调用',
+  'detail.errors': '错误 ({{count}})',
+  'detail.session_duration': '会话时长',
+  'detail.field_type': '类型',
+  'detail.field_state': '状态',
+
+  // ── 工坊面板零散项 ────────────────────────────────────────
+  'workshop.badge_working': '执行中',
+  'workshop.btn_abort': '中止',
+  'workshop.placeholder_url': 'ws://127.0.0.1:16968',
+  'workshop.placeholder_token': 'Token',
+  'workshop.btn_lang_title': '切换语言',
+
+  // ── 猫咪卡片补充 ──────────────────────────────────────────
+  'cat.avatar_failed': '头像加载失败',
+
+  // ── 数据层 (data-router) ──────────────────────────────────
+  'data.pending': '待执行',
+  'data.unknown_error': '未知错误',
+  'data.unknown_agent': '未知',
+  'data.model_failed': '模型请求失败',
+  'data.task_completed': '任务已完成',
+  'data.kind.cron': '定时任务',
+  'data.kind.hook': 'Webhook',
+  'data.kind.node': 'Node 任务',
+  'data.kind.global': '全局',
+  'data.kind.other': '其他',
+
   // ── 聊天抽屉补充 ────────────────────────────────────────
   'chat.unknown_error': '未知错误',
   'chat.new_session_label': '✨ 新会话',

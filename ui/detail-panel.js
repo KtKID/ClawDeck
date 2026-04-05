@@ -1,5 +1,7 @@
 // ui/detail-panel.js — Right-side detail panel for selected entities
 
+import { t } from '../i18n/index.js';
+
 export class DetailPanel {
   constructor(container) {
     this.el = document.createElement('div');
@@ -34,8 +36,8 @@ export class DetailPanel {
     let html = `
       <h3>${this._escape(entity.label || entity.type)}</h3>
       <div class="tab-bar">
-        <button class="tab-btn ${this._currentTab === 'overview' ? 'active' : ''}" data-tab="overview">Overview</button>
-        <button class="tab-btn ${this._currentTab === 'metrics' ? 'active' : ''}" data-tab="metrics">Metrics</button>
+        <button class="tab-btn ${this._currentTab === 'overview' ? 'active' : ''}" data-tab="overview">${t('detail.tab_overview')}</button>
+        <button class="tab-btn ${this._currentTab === 'metrics' ? 'active' : ''}" data-tab="metrics">${t('detail.tab_metrics')}</button>
       </div>
       <div class="tab-content">
     `;
@@ -108,14 +110,14 @@ export class DetailPanel {
 
   _renderMetrics(entity) {
     if (!this._telemetryManager) {
-      return '<div class="metrics-empty">No telemetry data available</div>';
+      return `<div class="metrics-empty">${t('detail.no_telemetry')}</div>`;
     }
 
     const sessionId = entity.data?.sessionId || entity.id;
     const tracker = this._telemetryManager.getSession(sessionId);
 
     if (!tracker) {
-      return '<div class="metrics-empty">No active session</div>';
+      return `<div class="metrics-empty">${t('detail.no_session')}</div>`;
     }
 
     // D2 fix: 安全访问 stats 和 events
@@ -130,23 +132,23 @@ export class DetailPanel {
     // Token usage section
     html += `
       <div class="metrics-section">
-        <div class="metrics-title">Token Usage</div>
+        <div class="metrics-title">${t('detail.token_usage')}</div>
         <div class="metrics-grid">
           <div class="metric-item">
             <div class="metric-value">${this._formatNumber(totalTokens.input || 0)}</div>
-            <div class="metric-label">Input</div>
+            <div class="metric-label">${t('detail.input')}</div>
           </div>
           <div class="metric-item">
             <div class="metric-value">${this._formatNumber(totalTokens.output || 0)}</div>
-            <div class="metric-label">Output</div>
+            <div class="metric-label">${t('detail.output')}</div>
           </div>
           <div class="metric-item">
             <div class="metric-value">${this._formatNumber(totalTokens.cacheRead || 0)}</div>
-            <div class="metric-label">Cache Read</div>
+            <div class="metric-label">${t('detail.cache_read')}</div>
           </div>
           <div class="metric-item">
             <div class="metric-value">${this._formatNumber(totalTokens.cacheWrite || 0)}</div>
-            <div class="metric-label">Cache Write</div>
+            <div class="metric-label">${t('detail.cache_write')}</div>
           </div>
         </div>
       </div>
@@ -155,7 +157,7 @@ export class DetailPanel {
     // Tool calls section
     html += `
       <div class="metrics-section">
-        <div class="metrics-title">Tool Calls</div>
+        <div class="metrics-title">${t('detail.tool_calls')}</div>
         <div class="metrics-summary">
           <span class="success">✓ ${toolCallStats.success}</span>
           <span class="failed">✗ ${toolCallStats.failed}</span>
@@ -172,7 +174,7 @@ export class DetailPanel {
             <div class="tool-item pending">
               <span class="tool-icon">●</span>
               <span class="tool-name">${this._escape(event.data?.name || 'unknown')}</span>
-              <span class="tool-status">running</span>
+              <span class="tool-status">${t('detail.tool_running')}</span>
             </div>
           `;
         } else if (event.type === 'tool_result') {
@@ -188,7 +190,7 @@ export class DetailPanel {
         }
       }
     } else {
-      html += '<div class="metrics-empty">No tool calls yet</div>';
+      html += `<div class="metrics-empty">${t('detail.no_tool_calls')}</div>`;
     }
 
     html += '</div></div>';
@@ -197,7 +199,7 @@ export class DetailPanel {
     if (errorStats.total > 0) {
       html += `
         <div class="metrics-section errors">
-          <div class="metrics-title">Errors (${errorStats.total})</div>
+          <div class="metrics-title">${t('detail.errors', { count: errorStats.total })}</div>
       `;
 
       for (const [type, count] of Object.entries(errorStats.byType || {})) {
@@ -218,7 +220,7 @@ export class DetailPanel {
       <div class="metrics-section">
         <div class="metric-item">
           <div class="metric-value">${this._formatDuration(duration)}</div>
-          <div class="metric-label">Session Duration</div>
+          <div class="metric-label">${t('detail.session_duration')}</div>
         </div>
       </div>
     `;
@@ -227,7 +229,7 @@ export class DetailPanel {
   }
 
   _getFields(entity) {
-    const fields = [['Type', entity.type], ['State', entity.state || 'N/A']];
+    const fields = [[t('detail.field_type'), entity.type], [t('detail.field_state'), entity.state || 'N/A']];
     if (entity.type === 'agent') {
       if (entity.data?.model) fields.push(['Model', entity.data.model]);
       if (entity.data?.tools) fields.push(['Tools', entity.data.tools.join(', ')]);

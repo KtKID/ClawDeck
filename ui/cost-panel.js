@@ -1,4 +1,5 @@
 // ui/cost-panel.js — 成本/Token 实时显示面板
+import { t } from '../i18n/index.js';
 
 export class CostPanel {
   constructor(container) {
@@ -23,7 +24,7 @@ export class CostPanel {
     if (!m) {
       this.el.innerHTML = `
         <div class="cost-row">
-          <span class="cost-label">等待数据...</span>
+          <span class="cost-label">${t('cost.loading')}</span>
         </div>
       `;
       return;
@@ -33,24 +34,24 @@ export class CostPanel {
       <div class="cost-row">
         <div class="cost-item">
           <span class="cost-value">${formatTokens(m.totalTokens)}</span>
-          <span class="cost-label">Token</span>
+          <span class="cost-label">${t('cost.token')}</span>
         </div>
         <div class="cost-item">
           <span class="cost-value">${m.activeSessions}</span>
-          <span class="cost-label">活跃会话</span>
+          <span class="cost-label">${t('cost.active_sessions')}</span>
         </div>
         <div class="cost-item">
           <span class="cost-value">${m.activeAgents}</span>
-          <span class="cost-label">在线伙伴</span>
+          <span class="cost-label">${t('cost.online_agents')}</span>
         </div>
         <div class="cost-item">
           <span class="cost-value">${m.completedSessions}</span>
-          <span class="cost-label">已完成</span>
+          <span class="cost-label">${t('cost.completed')}</span>
         </div>
         ${m.totalErrors > 0 ? `
         <div class="cost-item cost-error">
           <span class="cost-value">${m.totalErrors}</span>
-          <span class="cost-label">需要帮助</span>
+          <span class="cost-label">${t('cost.needs_help')}</span>
         </div>
         ` : ''}
       </div>
