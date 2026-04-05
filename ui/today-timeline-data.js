@@ -1,5 +1,6 @@
 // ui/today-timeline-data.js — 今日时间线 Mock 数据层
 // 基于 test/timeline/2026-03-19.jsonl 的事件流数据整理。
+import { t } from '../i18n/index.js';
 
 /**
  * @typedef {Object} TimelineEvent
@@ -34,9 +35,15 @@ export const todayTasks = [
  * 摘要条：避免重复标题，强调状态与上下文。
  * @type {TickerEvent[]}
  */
-export const tickerEvents = [
-  { type: 'info', text: '今天的时间线更像事件流，而不是单纯的已完成清单' },
-  { type: 'success', text: '已解决事件会突出“完成回执”，方便一眼扫过收尾节点' },
-  { type: 'warning', text: '失败事件会单独提亮，避免被埋在普通进行中卡片里' },
-  { type: 'info', text: '标题缺失时优先回退到用户原话，再退到摘要文案' },
-];
+/** 动态生成 ticker 文案（语言切换时需重新调用） */
+export function getTickerEvents() {
+  return [
+    { type: 'info', text: t('timeline.ticker.tip_eventstream') },
+    { type: 'success', text: t('timeline.ticker.tip_resolved') },
+    { type: 'warning', text: t('timeline.ticker.tip_failed') },
+    { type: 'info', text: t('timeline.ticker.tip_fallback') },
+  ];
+}
+
+// 兼容旧引用（首次加载）
+export const tickerEvents = getTickerEvents();

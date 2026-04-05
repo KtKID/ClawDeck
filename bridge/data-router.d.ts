@@ -111,6 +111,7 @@ export declare class DataRouter extends EventEmitter {
         runId?: string;
         resultSummary?: string;
     }): Promise<boolean>;
+    getCronJobRaw(jobId: string): any | null;
     getCronJobsForPanel(): any[];
     private _formatNextRun;
     getSessionDetail(sessionKey: string): Promise<any>;

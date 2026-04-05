@@ -1,7 +1,7 @@
 // ui/today-timeline-panel.js — 今日时间线 DOM 面板
 // 展示基于事件流的今日时间线与底部摘要条。
 
-import { todayTasks, tickerEvents } from './today-timeline-data.js';
+import { todayTasks, getTickerEvents } from './today-timeline-data.js';
 import { escape } from './utils.js';
 import { t } from '../i18n/index.js';
 
@@ -12,7 +12,7 @@ export class TodayTimelinePanel {
   constructor(container) {
     this._container = container;
     this._tasks = todayTasks;
-    this._ticker = tickerEvents;
+    this._ticker = getTickerEvents();
     this._modalElements = null;
     this._bodyOverflow = '';
     this._bindEvents();
@@ -28,6 +28,7 @@ export class TodayTimelinePanel {
 
   _render() {
     this._closeModal();
+    this._ticker = getTickerEvents(); // 刷新 ticker 文案（语言可能已切换）
     const count = this._tasks.length;
     const stats = this._buildStats(this._tasks);
 

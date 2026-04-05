@@ -497,13 +497,15 @@ export class CronDialog {
 
     // 表单字段变化 → 同步到 _form + 条件渲染
     this.el.addEventListener('input', (e) => {
-      const field = e.target.dataset?.field;
+      const fieldEl = e.target.closest('[data-field]');
+      const field = fieldEl?.dataset?.field;
       if (!field) return;
       this._syncField(field, e.target);
     });
 
     this.el.addEventListener('change', (e) => {
-      const field = e.target.dataset?.field;
+      const fieldEl = e.target.closest('[data-field]');
+      const field = fieldEl?.dataset?.field;
       if (!field) return;
       this._syncField(field, e.target);
 

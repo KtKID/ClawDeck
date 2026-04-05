@@ -23,7 +23,6 @@ export class CatCard {
    *   avatarUrl: string | null,
    *   traits: string[] | null,
    *   onSendCommand: ((message: string) => Promise<void>) | null,
-   *   onNewSessionClick: (() => void) | null,
    *   onChatClick: ((agentId: string) => void) | null
    * }} props
    */
@@ -113,11 +112,6 @@ export class CatCard {
         <button class="cat-cmd-send" ${this._isSending ? 'disabled' : ''}>
           ${this._isSending ? '...' : '➤'}
         </button>
-        ${props.onNewSessionClick ? `
-          <button class="cat-cmd-new" title="${t('cat.btn_new_session')}">
-            +
-          </button>
-        ` : ''}
       </div>
     `;
 
@@ -186,11 +180,6 @@ export class CatCard {
         const message = input?.value?.trim();
         if (!message || this._isSending) return;
         this._sendCommand(message);
-      } else if (btn.classList.contains('cat-cmd-new')) {
-        e.stopPropagation(); // 阻止冒泡到 document，避免 outside-click 立即关闭抽屉
-        if (this._props.onNewSessionClick) {
-          this._props.onNewSessionClick();
-        }
       }
     });
 

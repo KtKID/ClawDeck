@@ -95,13 +95,6 @@ export class CatStationPanel {
       const card = new CatCard(this.el.querySelector('.cat-station-scroll'), {
         ...agent,
         onSendCommand: (message) => this._sendCommand(agent.id, message),
-        onNewSessionClick: () => {
-          if (this.chatDrawerPanel) {
-            this.chatDrawerPanel.showNewSession(agent.id).catch(err => {
-              console.error('[CatStation] showNewSession failed:', err);
-            });
-          }
-        },
         onChatClick: (sessionKey) => {
           // sessionKey 可能为 null（无活跃 session），由 ChatDrawerPanel 自动选择该 agent 最新 session
           console.log('[CatStation] chat click:', sessionKey, 'agentId:', agent.id);

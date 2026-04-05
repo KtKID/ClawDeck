@@ -377,7 +377,7 @@
   <!-- Modules -->
   <script type="module">
     // 引入 i18n 核心模块（自执行设好 document.documentElement.lang）
-    import { t } from './i18n/index.js';
+    import { t, onLocaleChange } from './i18n/index.js';
 
     import { GatewayClient } from './bridge/gateway-client.js';
     import { MockGatewayClient } from './bridge/mock-replay-source.js';
@@ -475,6 +475,12 @@
       workshopContainer.appendChild(todayTimelineEl);
     }
     const todayTimeline = new TodayTimelinePanel(todayTimelineEl);
+
+    // 语言切换时重新渲染独立面板（不在 WorkshopPanel.refresh 流程内的组件）
+    onLocaleChange(() => {
+      aiAdvice._refresh();
+      todayTimeline._render();
+    });
 
     // workshop 默认可见，无需额外处理
 

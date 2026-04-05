@@ -338,6 +338,9 @@ export class DataRouter extends EventEmitter {
             return false;
         }
     }
+    getCronJobRaw(jobId) {
+        return this._cronJobs.find(j => j.id === jobId) || null;
+    }
     getCronJobsForPanel() {
         return this._cronJobs.map(job => ({
             id: job.id,

@@ -266,12 +266,6 @@
   cursor: not-allowed;
 }
 
-.cat-cmd-new {
-  background: var(--accent-blue, #5B8FB9) !important;
-  font-size: 0.85rem !important;
-  padding: 7px 8px !important;
-}
-
 /* 猫咪卡片入场动画 */
 .cat-card.entering {
   animation: fadeSlideUp 0.4s ease-out;

@@ -211,6 +211,10 @@ export default {
   'timeline.status.warning': 'Pending',
   'timeline.status.unknown': 'Unknown',
   'timeline.ticker.label': 'Event Summary',
+  'timeline.ticker.tip_eventstream': 'Today\'s timeline is more like an event stream, not just a done list',
+  'timeline.ticker.tip_resolved': 'Resolved events highlight "completion receipt" for quick scanning',
+  'timeline.ticker.tip_failed': 'Failed events are highlighted to avoid being buried in active cards',
+  'timeline.ticker.tip_fallback': 'When title is missing, falls back to user\'s original message first',
 
   // ── Schedule Panel ────────────────────────────────────
   'schedule.title': '⏰ Scheduled Tasks',
@@ -359,7 +363,7 @@ export default {
 
   // ── Cat Card ────────────────────────────────────────────
   'cat.btn_chat': 'Open Chat',
-  'cat.btn_new_session': 'New Session',
+  'cat.btn_new_session': 'Send Message',
 
   // ── Cost Panel ──────────────────────────────────────────
   'cost.loading': 'Loading data...',
@@ -422,7 +426,7 @@ export default {
 
   // ── Chat Drawer ─────────────────────────────────────────
   'chat.unknown_error': 'Unknown error',
-  'chat.new_session_label': '✨ New Session',
-  'chat.new_session_hint': 'Type a message and send to create a new session for this Agent',
+  'chat.new_session_label': '💬 Send Message',
+  'chat.new_session_hint': 'Type a message and send to this Agent',
   'chat.send_failed': 'Send failed: {{error}}',
 };

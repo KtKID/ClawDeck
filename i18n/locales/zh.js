@@ -211,6 +211,10 @@ export default {
   'timeline.status.warning': '待处理',
   'timeline.status.unknown': '未知',
   'timeline.ticker.label': '事件摘要',
+  'timeline.ticker.tip_eventstream': '今天的时间线更像事件流，而不是单纯的已完成清单',
+  'timeline.ticker.tip_resolved': '已解决事件会突出"完成回执"，方便一眼扫过收尾节点',
+  'timeline.ticker.tip_failed': '失败事件会单独提亮，避免被埋在普通进行中卡片里',
+  'timeline.ticker.tip_fallback': '标题缺失时优先回退到用户原话，再退到摘要文案',
 
   // ── 定时任务侧边栏 (schedule-panel) ───────────────────
   'schedule.title': '⏰ 定时任务',
@@ -370,7 +374,7 @@ export default {
 
   // ── 猫咪卡片 ──────────────────────────────────────────
   'cat.btn_chat': '打开对话',
-  'cat.btn_new_session': '创建新会话',
+  'cat.btn_new_session': '发送消息',
 
   // ── 成本面板 (cost-panel) ────────────────────────────────
   'cost.loading': '等待数据...',
@@ -433,7 +437,7 @@ export default {
 
   // ── 聊天抽屉补充 ────────────────────────────────────────
   'chat.unknown_error': '未知错误',
-  'chat.new_session_label': '✨ 新会话',
-  'chat.new_session_hint': '输入消息并发送，将为此 Agent 创建新会话',
+  'chat.new_session_label': '💬 发送消息',
+  'chat.new_session_hint': '输入消息并发送给此 Agent',
   'chat.send_failed': '发送失败: {{error}}',
 };

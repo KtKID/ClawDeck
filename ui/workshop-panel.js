@@ -313,6 +313,9 @@ export class WorkshopPanel {
 
   /** 渲染顶部标题区域 */
   _renderPageHeader() {
+    const titleEl = this.el.querySelector('.workshop-page-title');
+    if (titleEl) titleEl.textContent = t('page.today_orders');
+
     const dateEl = this.el.querySelector('#workshop-date');
     if (!dateEl) return;
 
