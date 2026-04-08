@@ -374,7 +374,6 @@ export default {
 
   // ── 猫咪卡片 ──────────────────────────────────────────
   'cat.btn_chat': '打开对话',
-  'cat.btn_new_session': '发送消息',
 
   // ── 成本面板 (cost-panel) ────────────────────────────────
   'cost.loading': '等待数据...',
@@ -458,7 +457,5 @@ export default {
 
   // ── 聊天抽屉补充 ────────────────────────────────────────
   'chat.unknown_error': '未知错误',
-  'chat.new_session_label': '💬 发送消息',
-  'chat.new_session_hint': '输入消息并发送给此 Agent',
   'chat.send_failed': '发送失败: {{error}}',
 };

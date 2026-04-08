@@ -7,3 +7,4 @@ dist/
 .claude
 .gitignore
 .serena
+.playwright-mcp

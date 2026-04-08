@@ -363,7 +363,6 @@ export default {
 
   // ── Cat Card ────────────────────────────────────────────
   'cat.btn_chat': 'Open Chat',
-  'cat.btn_new_session': 'Send Message',
 
   // ── Cost Panel ──────────────────────────────────────────
   'cost.loading': 'Loading data...',
@@ -426,8 +425,6 @@ export default {
 
   // ── Chat Drawer ─────────────────────────────────────────
   'chat.unknown_error': 'Unknown error',
-  'chat.new_session_label': '💬 Send Message',
-  'chat.new_session_hint': 'Type a message and send to this Agent',
   'chat.send_failed': 'Send failed: {{error}}',
 
   // ── Login Gate ──────────────────────────────────────────
