@@ -10,6 +10,12 @@
   /* 统一字体：系统原生，中英文均完美渲染 */
   --font-main: "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --font-mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+  /* Login Gate 等组件使用的别名 */
+  --bg-color: var(--bg-primary);
+  --paper-color: var(--bg-card);
+  --line-color: rgba(99, 130, 200, 0.25);
+  --heal-font: var(--font-main);
+  --paper-texture: none;
 }
 
 html, body {

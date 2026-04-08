@@ -435,6 +435,27 @@ export default {
   'data.kind.global': '全局',
   'data.kind.other': '其他',
 
+  // ── Login Gate（登录入口） ───────────────────────────────
+  'login.title': 'ClawDeck · 漂流甲板',
+  'login.subtitle': '连接 Gateway 开始协作',
+  'login.passwordPlaceholder': '留空使用设备认证',
+  'overview.access.wsUrl': 'Gateway 地址',
+  'overview.access.token': 'Gateway Token',
+  'overview.access.password': '密码',
+  'common.connect': '连接',
+  'common.offline': '离线',
+  'overview.connection.title': '设置步骤',
+  'overview.connection.step1': '第一步：在主机上运行 ',
+  'overview.connection.step2': '第二步：复制 Token，然后在仪表盘上运行 ',
+  'overview.connection.step3': '第三步：将 Token 和密码粘贴到上方表单并点击连接',
+  'overview.connection.docsLink': '查看文档',
+  'overview.auth.required': '需要认证 — 请填写 Token 或密码',
+  'overview.auth.failed': '认证失败 — {{reason}}',
+  'overview.pairing.hint': '此设备需要配对批准 — 请在网关主机执行 openclaw devices',
+  'overview.pairing.mobileHint': '移动端提示：在网关管理界面批准此设备',
+  'overview.insecure.hint': '当前使用非安全连接（HTTPS 环境下可消除此警告）',
+  'overview.insecure.stayHttp': '仍要使用 HTTP',
+
   // ── 聊天抽屉补充 ────────────────────────────────────────
   'chat.unknown_error': '未知错误',
   'chat.new_session_label': '💬 发送消息',

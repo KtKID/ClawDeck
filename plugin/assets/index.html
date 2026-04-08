@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/today-timeline.css?v=20260403">
   <link rel="stylesheet" href="css/ai-advice.css?v=20260403">
   <link rel="stylesheet" href="css/markdown-renderer.css?v=20260403">
+  <link rel="stylesheet" href="css/login-gate.css?v=20260408">
   <style>
     /* === P1 新增面板样式 === */
 
@@ -397,6 +398,7 @@
     import { refreshTracker } from './ui/refresh-tracker.js';
     import { TodayTimelinePanel } from './ui/today-timeline-panel.js';
     import { AIAdviceController } from './ui/ai-advice-controller.js';
+    import { LoginGate } from './ui/login-gate.js';
 
     const hud = document.getElementById('hud');
 
@@ -448,8 +450,60 @@
     // 日志指向工坊日志面板（已移除旧航行日志模块）
     const logPanel = workshop._workshopLogPanel;
 
-    // 始终显示 workshop 视图（已移除星图 Canvas 视图）
-    workshop.show();
+    // --- LoginGate（未认证时显示登录入口）---
+    // onConnected: gateway 连接成功后调用，同步显示 workshop 并拉取初始数据
+    const loginGate = new LoginGate(gateway, async (hideLoginGate) => {
+      if (!workshop.visible) {
+        workshop.show();
+        // 初始刷新（触发 syncDataToUI）
+        try {
+          logPanel.log('info', '[Gateway] 正在获取伙伴和委托数据...');
+          await dataSource.refresh();
+          refreshTracker.track('connected handler - data:updated [index.html]');
+          syncDataToUI();
+          logPanel.log('lifecycle', `[Gateway] 数据就绪: ${dataSource._agents.length} 个伙伴, ${dataSource._activeSessions.length} 个活跃委托`);
+        } catch (err) {
+          logPanel.log('error', `[Gateway] 初始数据获取失败: ${err.message}`);
+          syncDataToUI();
+        }
+        // 订阅推送事件
+        dataSource.subscribePush();
+        logPanel.log('lifecycle', '[Gateway] 推送事件已订阅 (agent/chat/approval/health)');
+        // 5s 轮询插件调试日志（guard 防多次重连重复注册）
+        if (!gateway._logPollStarted) {
+          gateway._logPollStarted = true;
+          let lastLogId = 0;
+          const LOG_POLL_INTERVAL = 5000;
+          const pollServerLogs = async () => {
+            if (!gateway.connected || !logPanel._serverMode) return;
+            try {
+              const result = await gateway.pollLogs(lastLogId);
+              if (result.entries?.length > 0) {
+                for (const entry of result.entries) {
+                  const type = mapCategoryToType(entry.cat);
+                  logPanel.log(type, `[${entry.cat}] ${entry.msg}`);
+                }
+                lastLogId = result.latestId;
+              }
+            } catch { /* 静默失败 */ }
+          };
+          pollServerLogs();
+          setInterval(pollServerLogs, LOG_POLL_INTERVAL);
+        }
+        // 获取健康状态
+        try { await dataSource.getHealth(); } catch (e) { console.warn('[Gateway] getHealth 失败', e); }
+        // 获取模型列表
+        try {
+          const models = await dataSource.getModels();
+          controlPanel.setModels(models);
+        } catch (e) { console.warn('[Gateway] getModels 失败', e); }
+        // usage 初始拉取
+        try { await dataSource.refreshUsage(); } catch (e) { console.warn('[Gateway] refreshUsage 失败', e); }
+        // workshop 显示完成后，卸载 Login Gate（全屏遮罩消失）
+        hideLoginGate();
+      }
+    });
+    loginGate.mount();
 
     // --- AI 建议 + 今日时间线（插入到筛选栏上方，工单统计栏下方）---
     // WorkshopPanel 构造时同步调用 _render()，此时 DOM 已就绪
@@ -489,63 +543,18 @@
       logPanel.log('info', `[RPC] ${caller} → ${method} [${layer}] ${durationMs}ms`);
     });
 
-    // 连接状态显示
+    // 连接状态显示（首次连接的完整初始化由 loginGate.onConnected 处理）
     const connEl = document.getElementById('conn-status');
+    let _isFirstConn = true;
     gateway.on('connected', async () => {
       connEl.textContent = 'online';
       connEl.className = 'connection-status online';
-      notify.show('已连接 Gateway');
-      logPanel.log('success', '[Gateway] 已连接');
-
-      // 初始刷新
-      try {
-        logPanel.log('info', '[Gateway] 正在获取伙伴和委托数据...');
-        await dataSource.refresh();
-        refreshTracker.track('connected handler - data:updated [index.html]');
-        syncDataToUI();
-        logPanel.log('lifecycle', `[Gateway] 数据就绪: ${dataSource._agents.length} 个伙伴, ${dataSource._activeSessions.length} 个活跃委托`);
-      } catch (err) {
-        logPanel.log('error', `[Gateway] 初始数据获取失败: ${err.message}`);
-        syncDataToUI(); // 兜底：确保即使 refresh 失败 UI 也能正确清空 loading 状态
+      if (!_isFirstConn) {
+        notify.show('已连接 Gateway');
+        logPanel.log('success', '[Gateway] 已连接');
+        try { await dataSource.refresh(); syncDataToUI(); } catch { /* 重连刷新静默 */ }
       }
-
-      // 订阅推送事件
-      dataSource.subscribePush();
-      logPanel.log('lifecycle', '[Gateway] 推送事件已订阅 (agent/chat/approval/health)');
-
-      // 5s 轮询插件调试日志（guard 防多次重连重复注册）
-      if (!gateway._logPollStarted) {
-        gateway._logPollStarted = true;
-        let lastLogId = 0;
-        const LOG_POLL_INTERVAL = 5000;
-        const pollServerLogs = async () => {
-          if (!gateway.connected || !logPanel._serverMode) return;
-          try {
-            const result = await gateway.pollLogs(lastLogId);
-            if (result.entries?.length > 0) {
-              for (const entry of result.entries) {
-                const type = mapCategoryToType(entry.cat);
-                logPanel.log(type, `[${entry.cat}] ${entry.msg}`);
-              }
-              lastLogId = result.latestId;
-            }
-          } catch { /* 静默失败 */ }
-        };
-        pollServerLogs(); // 立即获取一次
-        setInterval(pollServerLogs, LOG_POLL_INTERVAL);
-      }
-
-      // 获取健康状态
-      try { await dataSource.getHealth(); } catch (e) { console.warn('[Gateway] getHealth 失败', e); }
-
-      // 获取模型列表
-      try {
-        const models = await dataSource.getModels();
-        controlPanel.setModels(models);
-      } catch (e) { console.warn('[Gateway] getModels 失败', e); }
-
-      // usage 初始拉取（轮询由 DataRouter.startPolling 统一管理）
-      try { await dataSource.refreshUsage(); } catch (e) { console.warn('[Gateway] refreshUsage 失败', e); }
+      _isFirstConn = false;
     });
     gateway.on('disconnected', () => {
       connEl.textContent = 'disconnected';
